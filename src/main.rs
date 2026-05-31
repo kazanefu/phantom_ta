@@ -2,7 +2,9 @@
 use bevy::{prelude::*, window::WindowResolution};
 use bevy_hanabi::prelude::*;
 use bevy_rapier2d::prelude::*;
+mod config;
 mod settings;
+
 fn main() {
     let settings = settings::get_settings();
     let mut app = App::new();
@@ -33,5 +35,6 @@ fn main() {
         // .add_plugins(RapierDebugRenderPlugin::default())
         .add_plugins(HanabiPlugin)
         .insert_resource(settings)
+        .add_plugins(config::ConfigPlugin)
         .run();
 }

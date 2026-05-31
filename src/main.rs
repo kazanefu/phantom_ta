@@ -3,7 +3,10 @@ use bevy::{prelude::*, window::WindowResolution};
 use bevy_hanabi::prelude::*;
 use bevy_rapier2d::prelude::*;
 mod config;
+mod game_state;
 mod settings;
+
+pub use game_state::GameState;
 
 fn main() {
     let settings = settings::get_settings();
@@ -34,6 +37,7 @@ fn main() {
         })
         // .add_plugins(RapierDebugRenderPlugin::default())
         .add_plugins(HanabiPlugin)
+        .init_state::<GameState>()
         .insert_resource(settings)
         .add_plugins(config::ConfigPlugin)
         .run();

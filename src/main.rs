@@ -2,8 +2,11 @@
 use bevy::{prelude::*, window::WindowResolution};
 use bevy_hanabi::prelude::*;
 use bevy_rapier2d::prelude::*;
+mod character;
 mod config;
 mod game_state;
+mod ground_state;
+mod player;
 mod settings;
 
 pub use game_state::GameState;
@@ -40,5 +43,6 @@ fn main() {
         .init_state::<GameState>()
         .insert_resource(settings)
         .add_plugins(config::ConfigPlugin)
+        .add_plugins(ground_state::GroundStatePlugin)
         .run();
 }

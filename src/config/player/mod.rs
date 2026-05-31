@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+mod control;
 mod input;
 
 pub struct PlayerConfigPlugin;
@@ -12,4 +13,5 @@ impl Plugin for PlayerConfigPlugin {
 #[derive(Resource, Default)]
 pub struct PlayerConfig {
     pub input: input::InputSetting,
+    pub control: control::ControlConfig,
 }

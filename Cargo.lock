@@ -4134,8 +4134,10 @@ dependencies = [
  "bevy",
  "bevy_hanabi",
  "bevy_rapier2d",
+ "bitflags 2.11.1",
  "ron 0.12.1",
  "serde",
+ "smallvec",
  "toml",
 ]
 

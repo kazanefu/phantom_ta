@@ -5,6 +5,7 @@ use bevy_rapier2d::prelude::*;
 mod character;
 mod config;
 mod game_state;
+mod game_system_set;
 mod ground_state;
 mod player;
 mod settings;
@@ -44,5 +45,6 @@ fn main() {
         .insert_resource(settings)
         .add_plugins(config::ConfigPlugin)
         .add_plugins(ground_state::GroundStatePlugin)
+        .add_plugins(game_system_set::GameSystemSetPlugin)
         .run();
 }

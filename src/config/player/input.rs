@@ -17,6 +17,22 @@ impl InputKey {
             Self::Mouse(mouse_button) => mouse.just_pressed(mouse_button),
         }
     }
+    fn pressed(&self, keyboard: &ButtonInput<KeyCode>, mouse: &ButtonInput<MouseButton>) -> bool {
+        match *self {
+            Self::Key(key_code) => keyboard.pressed(key_code),
+            Self::Mouse(mouse_button) => mouse.pressed(mouse_button),
+        }
+    }
+    fn just_released(
+        &self,
+        keyboard: &ButtonInput<KeyCode>,
+        mouse: &ButtonInput<MouseButton>,
+    ) -> bool {
+        match *self {
+            Self::Key(key_code) => keyboard.just_released(key_code),
+            Self::Mouse(mouse_button) => mouse.just_released(mouse_button),
+        }
+    }
 }
 
 #[derive(Clone, Copy)]
@@ -38,6 +54,26 @@ impl KeyBindings {
             .iter()
             .flatten()
             .any(|key| key.just_pressed(keyboard, mouse))
+    }
+    pub fn pressed(
+        &self,
+        keyboard: &ButtonInput<KeyCode>,
+        mouse: &ButtonInput<MouseButton>,
+    ) -> bool {
+        self.keys
+            .iter()
+            .flatten()
+            .any(|key| key.pressed(keyboard, mouse))
+    }
+    pub fn just_released(
+        &self,
+        keyboard: &ButtonInput<KeyCode>,
+        mouse: &ButtonInput<MouseButton>,
+    ) -> bool {
+        self.keys
+            .iter()
+            .flatten()
+            .any(|key| key.just_released(keyboard, mouse))
     }
 }
 

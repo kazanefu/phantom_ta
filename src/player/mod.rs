@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+mod control_systems;
+mod input_systems;
 
 use crate::{
     character::{Character, CharacterKind},

@@ -6,10 +6,21 @@ pub struct PlayerInputPlugin;
 
 impl Plugin for PlayerInputPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            Update,
-            (move_x_input, move_y_input, dash_input, attack_input).in_set(GameSysSet::Input),
-        );
+        app.add_message::<MoveXDirectionMsg>()
+            .add_message::<JumpMsg>()
+            .add_message::<DashMsg>()
+            .add_message::<AttackMsg>()
+            .add_message::<DownMsg>()
+            .add_systems(
+                Update,
+                (
+                    move_x_input,
+                    move_y_input,
+                    (dash_input, dash_send).chain(),
+                    attack_input,
+                )
+                    .in_set(GameSysSet::Input),
+            );
     }
 }
 
@@ -17,6 +28,11 @@ impl Plugin for PlayerInputPlugin {
 pub enum MoveXDirectionMsg {
     Left,
     Right,
+}
+
+#[derive(Resource)]
+pub struct MoveXInput {
+    direction: f32,
 }
 
 impl MoveXDirectionMsg {
@@ -37,8 +53,8 @@ pub struct JumpMsg;
 #[derive(Message)]
 pub struct DownMsg;
 
-#[derive(Message)]
-pub struct DashMsg;
+#[derive(Resource)]
+pub struct DashPressedTime(pub f32);
 
 #[derive(Message)]
 pub enum AttackMsg {
@@ -91,10 +107,30 @@ fn dash_input(
     keyboard: Res<ButtonInput<KeyCode>>,
     mouse: Res<ButtonInput<MouseButton>>,
     config: Res<PlayerConfig>,
-    mut msg: MessageWriter<DashMsg>,
+    mut pressed_time: ResMut<DashPressedTime>,
+    mut run_msg: MessageWriter<RunMsg>,
+    time: Res<Time>,
 ) {
     if config.input.dash.just_pressed(&keyboard, &mouse) {
-        msg.write(DashMsg);
+        pressed_time.0 = 0.0;
+    }
+    if config.input.dash.pressed(&keyboard, &mouse) {
+        pressed_time.0 += time.delta_secs();
+        run_msg.write(RunMsg);
+    }
+    if config.input.dash.just_released(&keyboard, &mouse) {
+        pressed_time.0 = -1.0;
+    }
+}
+
+fn dash_send(
+    pressed_time: ResMut<DashPressedTime>,
+    config: Res<PlayerConfig>,
+    mut dash_msg: MessageWriter<DashMsg>,
+) {
+    let range = 0.0..config.control.dash_time;
+    if range.contains(&pressed_time.0) {
+        dash_msg.write(DashMsg);
     }
 }
 

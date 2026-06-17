@@ -9,4 +9,4 @@ impl Plugin for ConfigPlugin {
     }
 }
 
-pub use player::PlayerConfig;
+pub use player::{ControlConfig, PlayerConfig};

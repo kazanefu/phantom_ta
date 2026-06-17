@@ -2,6 +2,8 @@ use bevy::prelude::*;
 mod control;
 mod input;
 
+pub use control::ControlConfig;
+
 pub struct PlayerConfigPlugin;
 
 impl Plugin for PlayerConfigPlugin {

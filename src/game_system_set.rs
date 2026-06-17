@@ -7,11 +7,11 @@ impl Plugin for GameSystemSetPlugin {
         app.configure_sets(
             Update,
             (
-                GameSystemSet::Input,
-                GameSystemSet::Detection,
-                GameSystemSet::Logic,
-                GameSystemSet::Rendering,
-                GameSystemSet::Audio,
+                GameSysSet::Input,
+                GameSysSet::Detection,
+                GameSysSet::Logic,
+                GameSysSet::Rendering,
+                GameSysSet::Audio,
             )
                 .chain(),
         );
@@ -19,7 +19,7 @@ impl Plugin for GameSystemSetPlugin {
 }
 
 #[derive(SystemSet, Debug, Hash, PartialEq, Eq, Clone, Copy)]
-pub enum GameSystemSet {
+pub enum GameSysSet {
     Input,
     // collision detection, HP monitoring, etc.
     Detection,

@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{config::PlayerConfig, game_system_set::GameSystemSet};
+use crate::{config::PlayerConfig, game_system_set::GameSysSet};
 
 pub struct PlayerInputPlugin;
 
@@ -8,7 +8,7 @@ impl Plugin for PlayerInputPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (move_x_input, move_y_input, dash_input, attack_input).in_set(GameSystemSet::Input),
+            (move_x_input, move_y_input, dash_input, attack_input).in_set(GameSysSet::Input),
         );
     }
 }

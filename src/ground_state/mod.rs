@@ -3,13 +3,18 @@ use bevy_rapier2d::prelude::*;
 use bitflags::bitflags;
 use smallvec::SmallVec;
 
+use crate::game_system_set::GameSysSet;
+
 mod systems;
 
 pub struct GroundStatePlugin;
 
 impl Plugin for GroundStatePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, systems::update_ground_state);
+        app.add_systems(
+            Update,
+            systems::update_ground_state.in_set(GameSysSet::Detection),
+        );
     }
 }
 

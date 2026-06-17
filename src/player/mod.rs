@@ -28,3 +28,11 @@ impl Default for PlayerBundle {
         }
     }
 }
+
+pub struct PlayerPlugin;
+
+impl Plugin for PlayerPlugin {
+    fn build(&self, app: &mut App) {
+        
+    }
+}

@@ -10,6 +10,9 @@ mod ground_state;
 mod player;
 mod settings;
 mod test_scene;
+mod utils;
+
+pub use utils::*;
 
 pub use game_state::GameState;
 
@@ -40,13 +43,14 @@ fn main() {
             time_scale: 1.0,
             substeps: 1,
         })
-        // .add_plugins(RapierDebugRenderPlugin::default())
+        .add_plugins(RapierDebugRenderPlugin::default())
         .add_plugins(HanabiPlugin)
         .init_state::<GameState>()
         .insert_resource(settings)
         .add_plugins(config::ConfigPlugin)
         .add_plugins(ground_state::GroundStatePlugin)
         .add_plugins(game_system_set::GameSystemSetPlugin)
+        .add_plugins(utils::UtilsPlugin)
         .add_plugins(player::PlayerPlugin)
         .add_plugins(test_scene::TestScenePlugin)
         .run();

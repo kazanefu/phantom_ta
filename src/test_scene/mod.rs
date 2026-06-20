@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::{ground_state::Ground, player::PlayerBundle};
+use crate::{follow::Follower, ground_state::Ground, player::PlayerBundle};
 
 pub struct TestScenePlugin;
 
@@ -14,7 +14,6 @@ impl Plugin for TestScenePlugin {
 }
 
 fn setup_scene(mut commands: Commands) {
-    commands.spawn((Camera2d, Transform::from_xyz(0.0, 0.0, 0.0)));
     commands.spawn((
         RigidBody::Fixed,
         Transform::from_xyz(0.0, -30.0, 0.0).with_rotation(Quat::from_rotation_z(0.0)),
@@ -28,7 +27,18 @@ fn setup_scene(mut commands: Commands) {
     ));
     commands.spawn((
         RigidBody::Fixed,
-        Transform::from_xyz(40.0, -30.0, 0.0),
+        Transform::from_xyz(0.0, -100.0, 0.0).with_rotation(Quat::from_rotation_z(PI / 4.0)),
+        Collider::cuboid(1000.0, 10.0),
+        Ground,
+        Sprite {
+            color: Color::srgb(0.5, 0.8, 0.0),
+            custom_size: Some(Vec2::new(2000.0, 20.0)),
+            ..default()
+        },
+    ));
+    commands.spawn((
+        RigidBody::Fixed,
+        Transform::from_xyz(40.0, -900.0, 0.0),
         Collider::cuboid(10.0, 1000.0),
         Ground,
         Sprite {
@@ -37,14 +47,24 @@ fn setup_scene(mut commands: Commands) {
             ..default()
         },
     ));
+    let player = commands
+        .spawn((
+            PlayerBundle::default(),
+            Transform::from_xyz(0.0, 100.0, 0.0),
+            Collider::capsule_y(20.0, 10.0),
+            Sprite {
+                color: Color::srgb(0.0, 0.0, 1.0),
+                custom_size: Some(Vec2::new(20.0, 60.0)),
+                ..default()
+            },
+        ))
+        .id();
     commands.spawn((
-        PlayerBundle::default(),
-        Transform::from_xyz(0.0, 100.0, 0.0),
-        Collider::capsule_y(20.0, 10.0),
-        Sprite {
-            color: Color::srgb(0.0, 0.0, 1.0),
-            custom_size: Some(Vec2::new(20.0, 60.0)),
-            ..default()
+        Camera2d,
+        Transform::from_xyz(0.0, 0.0, 0.0),
+        Follower {
+            target: Some(player),
+            follow_speed: 0.5,
         },
     ));
 }

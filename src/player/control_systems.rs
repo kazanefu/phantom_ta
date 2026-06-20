@@ -1,10 +1,11 @@
 use super::*;
 use crate::{
+    config::PlayerConfig,
     game_system_set::GameSysSet,
     ground_state::{self, GroundState},
-    player::input_systems::{DashMsg, JumpMsg, MoveXDirectionMsg, RunMsg},
+    player::input_systems::{DashMsg, JumpMsg, MoveXInput},
 };
-use bevy::{math::VectorSpace, prelude::*};
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 pub struct PlayerControlPlugin;
@@ -15,24 +16,59 @@ impl Plugin for PlayerControlPlugin {
     }
 }
 
-fn update_x_velocity(
-    mut que: Query<(&mut Velocity, &PlayerStatus), With<Player>>,
-    mut walk_msg: MessageReader<MoveXDirectionMsg>,
-    mut dash_msg: MessageReader<DashMsg>,
-    mut run_msg: MessageReader<RunMsg>,
+fn update_dash_cool_time(
+    mut que: Query<&mut DashCoolTime>,
+    time: Res<Time>,
+    config: Res<PlayerConfig>,
 ) {
-    for (mut velocity, status) in &mut que {
-        let mut next_vel_x = 0.0;
-        for left_right in walk_msg.read() {
-            next_vel_x += left_right.to_sign() * status.walk_speed.value();
-            if !dash_msg.is_empty() {
-                next_vel_x *= status.dash_speed.value();
-                dash_msg.read();
+    let dt = time.delta_secs();
+    for mut dash_ct in &mut que {
+        if dash_ct.stock >= 2 {
+            continue;
+        }
+        dash_ct.cool_time += dt;
+        if dash_ct.cool_time >= config.control.dash_cooltime {
+            dash_ct.stock += 1;
+            dash_ct.cool_time = 0.0;
+        }
+    }
+}
+
+fn start_dash(
+    mut que: Query<&mut DashCoolTime>,
+    mut msg: MessageReader<DashMsg>,
+    config: Res<PlayerConfig>,
+) {
+    for _ in msg.read() {
+        for mut dash_ct in &mut que {
+            if dash_ct.stock >= 1 {
+                dash_ct.dash_time = config.control.dash_time;
+                dash_ct.stock -= 1;
             }
-            if !run_msg.is_empty() {
-                next_vel_x *= status.run_speed.value();
-                run_msg.read();
-            }
+        }
+    }
+}
+
+fn update_dash_time(mut que: Query<&mut DashCoolTime>, time: Res<Time>) {
+    let dt = time.delta_secs();
+    for mut dash_ct in &mut que {
+        if dash_ct.dash_time >= 0.0 {
+            dash_ct.dash_time -= dt;
+        }
+    }
+}
+
+fn update_x_velocity(
+    mut que: Query<(&mut Velocity, &PlayerStatus, &mut DashCoolTime), With<Player>>,
+    input: Res<MoveXInput>,
+    config: Res<PlayerConfig>,
+) {
+    for (mut velocity, status, mut dash_ct) in &mut que {
+        let mut next_vel_x = input.direction * status.walk_speed.value();
+        if dash_ct.dash_time > 0.0 {
+            next_vel_x *= status.dash_speed.value();
+        } else if input.is_running {
+            next_vel_x *= status.run_speed.value();
         }
         velocity.linear.x = next_vel_x;
     }

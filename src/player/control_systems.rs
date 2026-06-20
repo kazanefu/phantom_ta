@@ -67,11 +67,10 @@ fn update_dash_time(mut que: Query<&mut DashCoolTime>, time: Res<Time>) {
 }
 
 fn update_x_velocity(
-    mut que: Query<(&mut Velocity, &PlayerStatus, &mut DashCoolTime), With<Player>>,
+    mut que: Query<(&mut Velocity, &PlayerStatus, &DashCoolTime), With<Player>>,
     input: Res<MoveXInput>,
-    config: Res<PlayerConfig>,
 ) {
-    for (mut velocity, status, mut dash_ct) in &mut que {
+    for (mut velocity, status, dash_ct) in &mut que {
         let mut next_vel_x = input.direction * status.walk_speed.value();
         if dash_ct.dash_time > 0.0 {
             next_vel_x *= status.dash_speed.value();

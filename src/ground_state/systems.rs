@@ -1,8 +1,6 @@
 use crate::config::PlayerConfig;
 
 use super::*;
-use bevy::prelude::*;
-use bevy_rapier2d::prelude::*;
 
 pub fn update_ground_state(
     rapier_context: ReadRapierContext,

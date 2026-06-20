@@ -7,7 +7,10 @@ use crate::{
     character::{Character, CharacterKind},
     config::ControlConfig,
     ground_state::GroundState,
-    player::status::PlayerStatus,
+    player::{
+        control_systems::PlayerControlPlugin, input_systems::PlayerInputPlugin,
+        status::PlayerStatus,
+    },
 };
 
 #[derive(Component)]
@@ -50,5 +53,8 @@ impl Default for PlayerBundle {
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
-    fn build(&self, app: &mut App) {}
+    fn build(&self, app: &mut App) {
+        app.add_plugins(PlayerInputPlugin)
+            .add_plugins(PlayerControlPlugin);
+    }
 }

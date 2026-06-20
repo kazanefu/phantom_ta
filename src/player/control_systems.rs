@@ -2,17 +2,25 @@ use super::*;
 use crate::{
     config::PlayerConfig,
     game_system_set::GameSysSet,
-    ground_state::{self, GroundState},
+    ground_state::GroundState,
     player::input_systems::{DashMsg, JumpMsg, MoveXInput},
 };
-use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 pub struct PlayerControlPlugin;
 
 impl Plugin for PlayerControlPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (update_x_velocity).in_set(GameSysSet::Logic));
+        app.add_systems(
+            Update,
+            (update_dash_cool_time, start_dash, update_dash_time)
+                .chain()
+                .in_set(GameSysSet::Detection),
+        )
+        .add_systems(
+            Update,
+            (update_x_velocity, jump_action).in_set(GameSysSet::Logic),
+        );
     }
 }
 

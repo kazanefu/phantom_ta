@@ -46,5 +46,6 @@ fn main() {
         .add_plugins(config::ConfigPlugin)
         .add_plugins(ground_state::GroundStatePlugin)
         .add_plugins(game_system_set::GameSystemSetPlugin)
+        .add_plugins(player::PlayerPlugin)
         .run();
 }

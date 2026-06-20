@@ -49,6 +49,21 @@ impl GroundState {
     pub fn on_ceiling(&self) -> bool {
         self.contact_flag.contains(ContactFlag::OnCeiling)
     }
+    pub fn normal(&self) -> Vec2 {
+        self.contacts
+            .iter()
+            .map(|c| c.normal)
+            .sum::<Vec2>()
+            .normalize_or(Vec2::Y)
+    }
+    pub fn normal_ground_filtered(&self) -> Vec2 {
+        self.contacts
+            .iter()
+            .map(|c| c.normal)
+            .filter(|v| v.y >= 0.7)
+            .sum::<Vec2>()
+            .normalize_or(Vec2::Y)
+    }
 }
 
 #[derive(Clone, Copy)]

@@ -9,6 +9,7 @@ mod game_system_set;
 mod ground_state;
 mod player;
 mod settings;
+mod test_scene;
 
 pub use game_state::GameState;
 
@@ -47,5 +48,6 @@ fn main() {
         .add_plugins(ground_state::GroundStatePlugin)
         .add_plugins(game_system_set::GameSystemSetPlugin)
         .add_plugins(player::PlayerPlugin)
+        .add_plugins(test_scene::TestScenePlugin)
         .run();
 }

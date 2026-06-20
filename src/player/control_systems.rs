@@ -67,17 +67,20 @@ fn update_dash_time(mut que: Query<&mut DashCoolTime>, time: Res<Time>) {
 }
 
 fn update_x_velocity(
-    mut que: Query<(&mut Velocity, &PlayerStatus, &DashCoolTime), With<Player>>,
+    mut que: Query<(&mut Velocity, &PlayerStatus, &DashCoolTime, &GroundState), With<Player>>,
     input: Res<MoveXInput>,
 ) {
-    for (mut velocity, status, dash_ct) in &mut que {
-        let mut next_vel_x = input.direction * status.walk_speed.value();
+    for (mut velocity, status, dash_ct, ground_state) in &mut que {
+        let normal = ground_state.normal_ground_filtered();
+        let tangent = -normal.perp().normalize();
+        let normal_vel = velocity.linear.dot(normal);
+        let mut next_vel = tangent * input.direction * status.walk_speed.value();
         if dash_ct.dash_time > 0.0 {
-            next_vel_x *= status.dash_speed.value();
+            next_vel *= status.dash_speed.value();
         } else if input.is_running {
-            next_vel_x *= status.run_speed.value();
+            next_vel *= status.run_speed.value();
         }
-        velocity.linear.x = next_vel_x;
+        velocity.linear = next_vel + normal * normal_vel;
     }
 }
 

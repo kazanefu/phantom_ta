@@ -12,12 +12,12 @@ impl Default for ControlConfig {
     fn default() -> Self {
         Self {
             base_walk_speed: 50.0,
-            dash_speed_rate: 3.0,
-            dash_time: 0.5,
+            dash_speed_rate: 10.0,
+            dash_time: 0.2,
             dash_cooltime: 2.0,
             run_speed_rate: 1.5,
             ground_threshold: 0.7,
-            jump_init_vel: 100.0,
+            jump_init_vel: 200.0,
         }
     }
 }

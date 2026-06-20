@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_rapier2d::{dynamics::Velocity, prelude::*};
 mod control_systems;
 mod input_systems;
 mod status;
@@ -30,6 +31,12 @@ pub struct PlayerBundle {
     ground_state: GroundState,
     status: PlayerStatus,
     dash_cool_time: DashCoolTime,
+    vel: Velocity,
+    rigidbody: RigidBody,
+    axis_lock: LockedAxes,
+    gravity: GravityScale,
+    friction: Friction,
+    ccd: Ccd,
 }
 impl Default for PlayerBundle {
     fn default() -> Self {
@@ -46,6 +53,15 @@ impl Default for PlayerBundle {
                 cool_time: 0.0,
                 dash_time: 0.0,
             },
+            vel: Velocity::default(),
+            rigidbody: RigidBody::Dynamic,
+            axis_lock: LockedAxes::ROTATION_LOCKED,
+            gravity: GravityScale(40.0),
+            friction: Friction {
+                coefficient: 0.0,
+                combine_rule: CoefficientCombineRule::Min,
+            },
+            ccd: Ccd::enabled(),
         }
     }
 }

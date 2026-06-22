@@ -24,6 +24,12 @@ pub struct DashCoolTime {
     pub dash_time: f32,
 }
 
+#[derive(Component, Default)]
+pub struct JumpingTimer {
+    jumping_time: f32,
+    hold_time: f32,
+}
+
 #[derive(Bundle)]
 pub struct PlayerBundle {
     player: Player,
@@ -37,6 +43,7 @@ pub struct PlayerBundle {
     gravity: GravityScale,
     friction: Friction,
     ccd: Ccd,
+    jumping_timer: JumpingTimer,
 }
 impl Default for PlayerBundle {
     fn default() -> Self {
@@ -62,6 +69,7 @@ impl Default for PlayerBundle {
                 combine_rule: CoefficientCombineRule::Min,
             },
             ccd: Ccd::enabled(),
+            jumping_timer: JumpingTimer::default(),
         }
     }
 }

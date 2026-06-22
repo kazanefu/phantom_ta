@@ -19,7 +19,8 @@ impl Plugin for PlayerControlPlugin {
         )
         .add_systems(
             Update,
-            (update_x_velocity, jump_action).in_set(GameSysSet::Logic),
+            ((update_x_velocity, update_jumping_timer, jump_action).chain())
+                .in_set(GameSysSet::Logic),
         );
     }
 }
@@ -84,16 +85,43 @@ fn update_x_velocity(
     }
 }
 
+fn update_jumping_timer(mut que: Query<&mut JumpingTimer>, time: Res<Time>) {
+    for mut q in &mut que {
+        if q.jumping_time >= 0.0 {
+            q.jumping_time -= time.delta_secs();
+        }
+    }
+}
+
 fn jump_action(
-    mut que: Query<(&mut Velocity, &PlayerStatus, &GroundState), With<Player>>,
+    mut que: Query<
+        (
+            &mut Velocity,
+            &mut JumpingTimer,
+            &PlayerStatus,
+            &GroundState,
+        ),
+        With<Player>,
+    >,
     mut msg: MessageReader<JumpMsg>,
 ) {
-    for (mut velocity, status, ground_state) in &mut que {
+    for JumpMsg(hold_time) in msg.read() {
+        for (_velocity, mut jumping_timer, _status, ground_state) in &mut que {
+            if !ground_state.is_grounded() {
+                continue;
+            }
+            jumping_timer.jumping_time = 0.05;
+            jumping_timer.hold_time = *hold_time;
+        }
+    }
+    for (mut velocity, jumping_timer, status, ground_state) in &mut que {
         if !ground_state.is_grounded() {
             continue;
         }
-        for _ in msg.read() {
-            velocity.linear.y = status.jump_init_speed.value();
+
+        if jumping_timer.jumping_time > 0.0 {
+            velocity.linear.y =
+                status.jump_init_speed.value() * (jumping_timer.hold_time + 1.0).clamp(1.0, 3.3);
         }
     }
 }

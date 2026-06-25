@@ -5,7 +5,6 @@ use crate::{
     ground_state::GroundState,
     player::input_systems::{DashMsg, DownInput, JumpMsg, MoveXInput},
 };
-use bevy_rapier2d::prelude::*;
 
 pub struct PlayerControlPlugin;
 

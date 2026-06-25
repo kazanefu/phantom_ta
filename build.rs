@@ -3,31 +3,24 @@ use std::path::Path;
 
 fn main() {
     let out_dir = std::env::var("OUT_DIR").unwrap();
-
     // target/debug に辿る
     let target_dir = Path::new(&out_dir).ancestors().nth(3).unwrap();
+    let one_cycle = |path: &str| {
+        let dest = target_dir.join(path);
+        let src = Path::new(path);
 
-    let dest = target_dir.join("assets/");
-    let src = Path::new("assets/");
+        // 既存削除
+        if dest.exists() {
+            fs::remove_dir_all(&dest).unwrap();
+        }
 
-    // 既存削除
-    if dest.exists() {
-        fs::remove_dir_all(&dest).unwrap();
-    }
+        // コピー
+        copy_dir_all(src, &dest).unwrap();
+    };
 
-    // コピー
-    copy_dir_all(src, &dest).unwrap();
-
-    let dest = target_dir.join("settings/");
-    let src = Path::new("settings/");
-
-    // 既存削除
-    if dest.exists() {
-        fs::remove_dir_all(&dest).unwrap();
-    }
-
-    // コピー
-    copy_dir_all(src, &dest).unwrap();
+    one_cycle("assets/");
+    one_cycle("settings/");
+    one_cycle("save_data/");
 }
 
 // 再帰コピー

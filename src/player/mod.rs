@@ -1,8 +1,12 @@
+use std::collections::HashSet;
+
 use bevy::prelude::*;
 use bevy_rapier2d::{dynamics::Velocity, prelude::*};
 mod collision;
 mod control_systems;
 mod input_systems;
+mod save_data;
+mod skills;
 mod status;
 
 use crate::{
@@ -12,7 +16,7 @@ use crate::{
     ground_state::GroundState,
     player::{
         collision::PlayerCollisionPlugin, control_systems::PlayerControlPlugin,
-        input_systems::PlayerInputPlugin, status::PlayerStatus,
+        input_systems::PlayerInputPlugin, skills::SkillPlugin, status::PlayerStatus,
     },
 };
 
@@ -86,8 +90,10 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(PlayerInputPlugin)
+        app.init_resource::<save_data::PlayerSaveData>()
+            .add_plugins(PlayerInputPlugin)
             .add_plugins(PlayerCollisionPlugin)
-            .add_plugins(PlayerControlPlugin);
+            .add_plugins(PlayerControlPlugin)
+            .add_plugins(SkillPlugin);
     }
 }

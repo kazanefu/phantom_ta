@@ -13,6 +13,7 @@ mod player;
 mod settings;
 mod test_scene;
 mod utils;
+mod map;
 
 pub use collision_groups::*;
 pub use game_state::GameState;
@@ -53,6 +54,7 @@ fn main() {
         .add_plugins(ground_state::GroundStatePlugin)
         .add_plugins(game_system_set::GameSystemSetPlugin)
         .add_plugins(utils::UtilsPlugin)
+        .add_plugins(character::CharacterPlugin)
         .add_plugins(player::PlayerPlugin)
         .add_plugins(end_app::EndAppPlugin)
         .add_plugins(test_scene::TestScenePlugin)

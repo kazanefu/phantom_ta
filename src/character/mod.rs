@@ -1,4 +1,15 @@
 use bevy::prelude::*;
+mod action_cooldown;
+
+pub use action_cooldown::*;
+
+pub struct CharacterPlugin;
+
+impl Plugin for CharacterPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(ActionCooldownPlugin);
+    }
+}
 
 #[derive(Clone, Copy)]
 pub enum CharacterKind {

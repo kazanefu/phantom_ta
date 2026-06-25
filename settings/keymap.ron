@@ -35,4 +35,10 @@
         "None",
         "None",
     ],
+    end_app: [
+        "Backspace",
+        "None",
+        "None",
+        "None",
+    ],
 )

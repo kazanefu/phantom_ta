@@ -1,6 +1,10 @@
+use crate::config::player::input::InputKey::Key;
+
+use super::keymap_fs::{
+    keycode_to_str, mousebutton_to_str, string_to_keycode, string_to_mousebutton,
+};
 use bevy::prelude::*;
-use serde::{Deserialize, Serialize, Serializer, Deserializer};
-use super::keymap_fs::{keycode_to_str, string_to_keycode, mousebutton_to_str, string_to_mousebutton};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 #[derive(Clone, Copy)]
 pub enum InputKey {
@@ -136,6 +140,7 @@ pub struct InputSetting {
     pub down: KeyBindings,
     pub dash: KeyBindings,
     pub attack: KeyBindings,
+    pub end_app: KeyBindings,
 }
 
 impl Default for InputSetting {
@@ -172,6 +177,7 @@ impl Default for InputSetting {
                 None,
             ]),
             attack: KeyBindings::new([Some(InputKey::Mouse(MouseButton::Left)), None, None, None]),
+            end_app: KeyBindings::new([Some(Key(KeyCode::Backspace)), None, None, None]),
         }
     }
 }

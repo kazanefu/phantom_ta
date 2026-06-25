@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+pub mod file;
 pub mod follow;
 
 pub struct UtilsPlugin;

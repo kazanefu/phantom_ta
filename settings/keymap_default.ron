@@ -1,0 +1,8 @@
+(
+    jump: (keys: [Some(Key("Space")), Some(Key("ArrowUp")), Some(Key("KeyW")), None]),
+    left: (keys: [Some(Key("ArrowLeft")), Some(Key("KeyA")), None, None]),
+    right: (keys: [Some(Key("ArrowRight")), Some(Key("KeyD")), None, None]),
+    down: (keys: [Some(Key("ArrowDown")), Some(Key("KeyS")), None, None]),
+    dash: (keys: [Some(Key("ShiftLeft")), Some(Mouse("Right")), None, None]),
+    attack: (keys: [Some(Mouse("Left")), None, None, None]),
+)

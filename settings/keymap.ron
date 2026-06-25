@@ -1,0 +1,38 @@
+(
+    jump: [
+        "Space",
+        "ArrowUp",
+        "KeyW",
+        "None",
+    ],
+    left: [
+        "ArrowLeft",
+        "KeyA",
+        "None",
+        "None",
+    ],
+    right: [
+        "ArrowRight",
+        "KeyD",
+        "None",
+        "None",
+    ],
+    down: [
+        "ArrowDown",
+        "KeyS",
+        "None",
+        "None",
+    ],
+    dash: [
+        "ShiftLeft",
+        "Right",
+        "None",
+        "None",
+    ],
+    attack: [
+        "Left",
+        "None",
+        "None",
+        "None",
+    ],
+)

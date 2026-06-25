@@ -8,7 +8,7 @@ impl Plugin for PlayerInputPlugin {
     fn build(&self, app: &mut App) {
         app.add_message::<JumpMsg>()
             .add_message::<AttackMsg>()
-            .add_message::<DownMsg>()
+            .init_resource::<DownInput>()
             .add_message::<DashMsg>()
             .init_resource::<JumpHoldTime>()
             .insert_resource(MoveXInput {
@@ -43,8 +43,8 @@ pub struct JumpMsg(pub f32);
 #[derive(Resource, Default)]
 pub struct JumpHoldTime(pub f32);
 
-#[derive(Message)]
-pub struct DownMsg;
+#[derive(Resource, Default)]
+pub struct DownInput(pub bool);
 
 #[derive(Message)]
 pub enum AttackMsg {
@@ -91,19 +91,20 @@ fn move_y_input(
     mouse: Res<ButtonInput<MouseButton>>,
     config: Res<PlayerConfig>,
     mut jump_msg: MessageWriter<JumpMsg>,
-    mut down_msg: MessageWriter<DownMsg>,
+    mut down: ResMut<DownInput>,
     mut hold_time: ResMut<JumpHoldTime>,
 ) {
+    down.0 = false;
     match (
         config.input.jump.just_released(&keyboard, &mouse),
-        config.input.down.just_pressed(&keyboard, &mouse),
+        config.input.down.pressed(&keyboard, &mouse),
     ) {
         (true, false) => {
             jump_msg.write(JumpMsg(hold_time.0));
             hold_time.0 = 0.0;
         }
         (false, true) => {
-            down_msg.write(DownMsg);
+            down.0 = true;
         }
         _ => {}
     }

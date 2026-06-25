@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::{follow::Follower, ground_state::Ground, player::PlayerBundle};
+use crate::{ONE_WAY_PLATFORM_GROUP, follow::Follower, ground_state::Ground, player::PlayerBundle};
 
 pub struct TestScenePlugin;
 
@@ -35,6 +35,7 @@ fn setup_scene(mut commands: Commands) {
             custom_size: Some(Vec2::new(2000.0, 20.0)),
             ..default()
         },
+        CollisionGroups::new(ONE_WAY_PLATFORM_GROUP, Group::all()),
     ));
     commands.spawn((
         RigidBody::Fixed,

@@ -3,6 +3,7 @@ use bevy::{prelude::*, window::WindowResolution};
 use bevy_hanabi::prelude::*;
 use bevy_rapier2d::prelude::*;
 mod character;
+mod collision_groups;
 mod config;
 mod game_state;
 mod game_system_set;
@@ -12,9 +13,9 @@ mod settings;
 mod test_scene;
 mod utils;
 
-pub use utils::*;
-
+pub use collision_groups::*;
 pub use game_state::GameState;
+pub use utils::*;
 
 fn main() {
     let settings = settings::get_settings();

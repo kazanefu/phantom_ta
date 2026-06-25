@@ -3,7 +3,7 @@ use crate::{
     config::PlayerConfig,
     game_system_set::GameSysSet,
     ground_state::GroundState,
-    player::input_systems::{DashMsg, JumpMsg, MoveXInput},
+    player::input_systems::{DashMsg, DownInput, JumpMsg, MoveXInput},
 };
 use bevy_rapier2d::prelude::*;
 
@@ -19,8 +19,14 @@ impl Plugin for PlayerControlPlugin {
         )
         .add_systems(
             Update,
-            ((update_x_velocity, update_jumping_timer, jump_action).chain())
-                .in_set(GameSysSet::Logic),
+            ((
+                update_x_velocity,
+                update_jumping_timer,
+                jump_action,
+                down_action,
+            )
+                .chain())
+            .in_set(GameSysSet::Logic),
         );
     }
 }
@@ -123,5 +129,11 @@ fn jump_action(
             velocity.linear.y =
                 status.jump_init_speed.value() * (jumping_timer.hold_time + 1.0).clamp(1.0, 3.3);
         }
+    }
+}
+
+fn down_action(mut que: Query<&mut DownState, With<Player>>, input: Res<DownInput>) {
+    for mut down_state in &mut que {
+        down_state.0 = input.0;
     }
 }

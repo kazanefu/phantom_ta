@@ -1,16 +1,18 @@
 use bevy::prelude::*;
 use bevy_rapier2d::{dynamics::Velocity, prelude::*};
+mod collision;
 mod control_systems;
 mod input_systems;
 mod status;
 
 use crate::{
+    PLAYER_GROUP,
     character::{Character, CharacterKind},
     config::ControlConfig,
     ground_state::GroundState,
     player::{
-        control_systems::PlayerControlPlugin, input_systems::PlayerInputPlugin,
-        status::PlayerStatus,
+        collision::PlayerCollisionPlugin, control_systems::PlayerControlPlugin,
+        input_systems::PlayerInputPlugin, status::PlayerStatus,
     },
 };
 
@@ -29,6 +31,8 @@ pub struct JumpingTimer {
     jumping_time: f32,
     hold_time: f32,
 }
+#[derive(Component)]
+pub struct DownState(pub bool);
 
 #[derive(Bundle)]
 pub struct PlayerBundle {
@@ -44,6 +48,8 @@ pub struct PlayerBundle {
     friction: Friction,
     ccd: Ccd,
     jumping_timer: JumpingTimer,
+    down_state: DownState,
+    collision_group: CollisionGroups,
 }
 impl Default for PlayerBundle {
     fn default() -> Self {
@@ -70,6 +76,8 @@ impl Default for PlayerBundle {
             },
             ccd: Ccd::enabled(),
             jumping_timer: JumpingTimer::default(),
+            down_state: DownState(false),
+            collision_group: CollisionGroups::new(PLAYER_GROUP, Group::all()),
         }
     }
 }
@@ -79,6 +87,7 @@ pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(PlayerInputPlugin)
+            .add_plugins(PlayerCollisionPlugin)
             .add_plugins(PlayerControlPlugin);
     }
 }

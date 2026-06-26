@@ -5,8 +5,9 @@ pub enum GameState {
     #[default]
     Loading,
     Start,
-    CourseSelection,
+    SaveDataSelect,
     Playing,
+    RoomTransition,
     Result,
-    Eixt,
+    Exit,
 }

@@ -1,5 +1,8 @@
 use bevy::prelude::Resource;
 use serde::{Deserialize, Serialize};
+
+use crate::file::{SaveLoad, Toml};
+
 mod load;
 
 pub use load::get_settings;
@@ -50,4 +53,9 @@ impl Default for AudioSettings {
             se_volume: 0.7,
         }
     }
+}
+
+impl SaveLoad for Settings {
+    const PATH: &'static str = "settings/settings.toml";
+    type Format = Toml;
 }

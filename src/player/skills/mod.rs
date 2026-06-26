@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use smallvec::SmallVec;
+use serde::{Deserialize, Serialize};
 
 use crate::{game_system_set::GameSysSet, player::status::PlayerStatus};
 
@@ -38,8 +38,9 @@ pub enum SkillSysSet {
 
 /// The player's skill build.
 /// chosen by the player from a list of available skills
+#[derive(Serialize, Deserialize)]
 pub struct SkillBuild {
-    pub skills: SmallVec<[Option<SkillKind>; Self::DEFAULT_CAPACITY]>,
+    pub skills: [Option<SkillKind>; Self::DEFAULT_CAPACITY],
 }
 
 impl SkillBuild {
@@ -48,7 +49,7 @@ impl SkillBuild {
 impl Default for SkillBuild {
     fn default() -> Self {
         Self {
-            skills: SmallVec::from_slice(&[None, None, None, None]),
+            skills: [None, None, None, None],
         }
     }
 }
@@ -159,7 +160,7 @@ impl SkillActivateMsg {
 }
 
 #[repr(u8)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SkillKind {
     TestSkill,
     TestSkill2,

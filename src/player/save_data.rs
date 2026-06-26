@@ -1,6 +1,10 @@
+use serde::{Deserialize, Serialize};
+
+use crate::file::{Ron, SaveLoad};
+
 use super::*;
 
-#[derive(Resource)]
+#[derive(Resource, Serialize, Deserialize, Default)]
 pub struct PlayerSaveDataList {
     pub list: Vec<PlayerSaveData>,
 }
@@ -13,7 +17,7 @@ impl PlayerSaveDataList {
     }
 }
 
-#[derive(Resource)]
+#[derive(Resource, Serialize, Deserialize)]
 pub struct PlayerSaveData {
     pub id: usize,
     pub name: String,
@@ -43,4 +47,9 @@ impl Default for PlayerSaveData {
             last_checkpoint: 0,
         }
     }
+}
+
+impl SaveLoad for PlayerSaveDataList {
+    const PATH: &'static str = "save_data/data.ron";
+    type Format = Ron;
 }

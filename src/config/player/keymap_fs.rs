@@ -1,30 +1,26 @@
+use crate::file::{Ron, SaveLoad};
+
 use super::input::InputSetting;
 use bevy::prelude::*;
 
 impl InputSetting {
     pub fn load_from_file(path: &str) -> Self {
-        match std::fs::read_to_string(path) {
-            Ok(contents) => {
-                if let Ok(setting) = ron::from_str::<InputSetting>(&contents) {
-                    return setting;
-                }
-            }
-            Err(_) => {}
-        }
-
-        let default = Self::default();
-        let _ = default.save_to_file(path);
-        default
+        Self::load(path).unwrap_or_else(|_| {
+            let default = Self::default();
+            let _ = default.save(path);
+            default
+        })
     }
 
     pub fn save_to_file(&self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
-        if let Some(parent) = std::path::Path::new(path).parent() {
-            std::fs::create_dir_all(parent)?;
-        }
-        let ron_str = ron::ser::to_string_pretty(self, Default::default())?;
-        std::fs::write(path, ron_str)?;
+        self.save(path)?;
         Ok(())
     }
+}
+
+impl SaveLoad for InputSetting {
+    const PATH: &'static str = "settings/keymap.ron";
+    type Format = Ron;
 }
 
 const KEYCODE_MAP: &[(&str, KeyCode)] = &[

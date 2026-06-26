@@ -5,6 +5,8 @@ mod keymap_fs;
 
 pub use control::ControlConfig;
 
+use crate::file::SaveLoad;
+
 pub struct PlayerConfigPlugin;
 
 impl Plugin for PlayerConfigPlugin {
@@ -30,5 +32,5 @@ impl Default for PlayerConfig {
 }
 
 fn load_input_setting(mut res: ResMut<PlayerConfig>) {
-    res.input = input::InputSetting::load_from_file("settings/keymap.ron");
+    res.input = input::InputSetting::load_default_path().unwrap_or_default();
 }

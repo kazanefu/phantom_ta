@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+pub mod collision;
 pub mod file;
 pub mod follow;
 

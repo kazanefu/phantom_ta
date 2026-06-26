@@ -3,30 +3,36 @@ use crate::{
     config::PlayerConfig,
     game_system_set::GameSysSet,
     ground_state::GroundState,
-    player::input_systems::{DashMsg, DownInput, JumpMsg, MoveXInput},
+    player::{
+        input_systems::{AttackMsg, DashMsg, DownInput, JumpMsg, MoveXInput},
+        skills::SkillStack,
+    },
 };
 
 pub struct PlayerControlPlugin;
 
 impl Plugin for PlayerControlPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            Update,
-            (update_dash_cool_time, start_dash, update_dash_time)
-                .chain()
-                .in_set(GameSysSet::Detection),
-        )
-        .add_systems(
-            Update,
-            ((
-                update_x_velocity,
-                update_jumping_timer,
-                jump_action,
-                down_action,
+        app.add_message::<NormalAttackMsg>()
+            .add_systems(
+                Update,
+                (update_dash_cool_time, start_dash, update_dash_time)
+                    .chain()
+                    .in_set(GameSysSet::Detection),
             )
-                .chain())
-            .in_set(GameSysSet::Logic),
-        );
+            .add_systems(
+                Update,
+                ((
+                    update_x_velocity,
+                    update_jumping_timer,
+                    jump_action,
+                    down_action,
+                    call_attack,
+                )
+                    .chain())
+                .run_if(|stack: Res<SkillStack>| stack.is_ready() && !stack.is_activating)
+                .in_set(GameSysSet::Logic),
+            );
     }
 }
 
@@ -134,5 +140,23 @@ fn jump_action(
 fn down_action(mut que: Query<&mut DownState, With<Player>>, input: Res<DownInput>) {
     for mut down_state in &mut que {
         down_state.0 = input.0;
+    }
+}
+
+#[derive(Message)]
+pub struct NormalAttackMsg;
+
+/// Call attack action, if skill stack is not empty, activate skill, otherwise send normal attack message.
+fn call_attack(
+    mut stack: ResMut<SkillStack>,
+    mut msg: MessageReader<AttackMsg>,
+    mut normal_attack: MessageWriter<NormalAttackMsg>,
+) {
+    for _ in msg.read() {
+        if !stack.is_empty() {
+            stack.activate();
+        } else {
+            normal_attack.write(NormalAttackMsg);
+        }
     }
 }

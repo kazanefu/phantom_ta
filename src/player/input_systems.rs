@@ -1,6 +1,6 @@
-use bevy::prelude::*;
+use bevy::{input::mouse::MouseMotion, prelude::*};
 
-use crate::{config::PlayerConfig, game_system_set::GameSysSet};
+use crate::{config::PlayerConfig, game_system_set::GameSysSet, player::Player};
 
 pub struct PlayerInputPlugin;
 
@@ -11,6 +11,7 @@ impl Plugin for PlayerInputPlugin {
             .init_resource::<DownInput>()
             .add_message::<DashMsg>()
             .init_resource::<JumpHoldTime>()
+            .init_resource::<MousePosition>()
             .insert_resource(MoveXInput {
                 direction: 0.0,
                 is_running: false,
@@ -18,6 +19,7 @@ impl Plugin for PlayerInputPlugin {
             .add_systems(
                 Update,
                 (
+                    update_mouse_position,
                     move_x_input,
                     (jump_hold, move_y_input).chain(),
                     dash_input,
@@ -138,5 +140,44 @@ fn attack_input(
     }
     if config.input.attack.just_released(&keyboard, &mouse) {
         msg.write(AttackMsg::End);
+    }
+}
+
+#[derive(Resource, Default)]
+pub struct MousePosition {
+    pub position: Vec2,
+    pub delta: Vec2,
+    pub direction: Vec2,
+}
+
+fn update_mouse_position(
+    windows: Query<&Window>,
+    mut mouse_position: ResMut<MousePosition>,
+    player_que: Query<&Transform, With<Player>>,
+    camera_que: Query<(&Camera, &GlobalTransform)>,
+    mut mouse_motion: MessageReader<MouseMotion>,
+) {
+    let Ok(window) = windows.single() else {
+        return;
+    };
+    let Ok(player_transform) = player_que.single() else {
+        return;
+    };
+    let Ok((camera, camera_transform)) = camera_que.single() else {
+        return;
+    };
+    let Some(cursor_position) = window.cursor_position() else {
+        return;
+    };
+    let Ok(mouse_world_position) = camera.viewport_to_world_2d(camera_transform, cursor_position)
+    else {
+        return;
+    };
+    mouse_position.position = mouse_world_position;
+    mouse_position.direction =
+        (mouse_world_position - player_transform.translation.truncate()).normalize_or_zero();
+    mouse_position.delta = Vec2::ZERO;
+    for motion in mouse_motion.read() {
+        mouse_position.delta += motion.delta;
     }
 }

@@ -5,6 +5,7 @@ use bevy_rapier2d::{dynamics::Velocity, prelude::*};
 mod collision;
 mod control_systems;
 mod input_systems;
+mod normal_attacks;
 mod save_data;
 mod skills;
 mod status;
@@ -16,7 +17,8 @@ use crate::{
     ground_state::GroundState,
     player::{
         collision::PlayerCollisionPlugin, control_systems::PlayerControlPlugin,
-        input_systems::PlayerInputPlugin, skills::SkillPlugin, status::PlayerStatus,
+        input_systems::PlayerInputPlugin, normal_attacks::NormalAttackPlugin, skills::SkillPlugin,
+        status::PlayerStatus,
     },
 };
 
@@ -94,6 +96,7 @@ impl Plugin for PlayerPlugin {
             .add_plugins(PlayerInputPlugin)
             .add_plugins(PlayerCollisionPlugin)
             .add_plugins(PlayerControlPlugin)
-            .add_plugins(SkillPlugin);
+            .add_plugins(SkillPlugin)
+            .add_plugins(NormalAttackPlugin);
     }
 }

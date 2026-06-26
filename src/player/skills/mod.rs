@@ -17,14 +17,13 @@ impl Plugin for SkillPlugin {
             )
             .add_systems(
                 Update,
-                (
+                ((
                     tick_skill_cooldown,
-                    activate_skill
-                        .run_if(|skill_stack: Res<SkillStack>| {
-                            skill_stack.is_activating && skill_stack.is_ready()
-                        })
-                        .chain(),
+                    activate_skill.run_if(|skill_stack: Res<SkillStack>| {
+                        skill_stack.is_activating && skill_stack.is_ready()
+                    }),
                 )
+                    .chain(),)
                     .in_set(SkillSysSet::Activation),
             );
     }

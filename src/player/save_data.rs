@@ -1,12 +1,23 @@
 use serde::{Deserialize, Serialize};
 
 use crate::file::{Ron, SaveLoad};
+use crate::loading::{LoadTaskKind, LoadTaskState};
 
 use super::*;
 
 #[derive(Resource, Serialize, Deserialize, Default)]
 pub struct PlayerSaveDataList {
     pub list: Vec<PlayerSaveData>,
+}
+
+pub fn load_player_save_data_list(
+    mut res: ResMut<PlayerSaveDataList>,
+    mut tasklist: ResMut<LoadTaskState>,
+) {
+    *res = PlayerSaveDataList::load_default_path().unwrap_or_default();
+    res.set_id();
+    tasklist.set_task_done(LoadTaskKind::PlayerSaveDataList);
+    println!("done load player save data list");
 }
 
 impl PlayerSaveDataList {

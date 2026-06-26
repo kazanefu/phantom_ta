@@ -9,11 +9,12 @@ mod end_app;
 mod game_state;
 mod game_system_set;
 mod ground_state;
+mod loading;
+mod map;
 mod player;
 mod settings;
 mod test_scene;
 mod utils;
-mod map;
 
 pub use collision_groups::*;
 pub use game_state::GameState;
@@ -51,6 +52,7 @@ fn main() {
         .init_state::<GameState>()
         .insert_resource(settings)
         .add_plugins(config::ConfigPlugin)
+        .add_plugins(loading::LoadingPlugin)
         .add_plugins(ground_state::GroundStatePlugin)
         .add_plugins(game_system_set::GameSystemSetPlugin)
         .add_plugins(utils::UtilsPlugin)

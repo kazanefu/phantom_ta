@@ -11,10 +11,11 @@ mod skills;
 mod status;
 
 use crate::{
-    PLAYER_GROUP,
+    GameState, PLAYER_GROUP,
     character::{Character, CharacterKind},
     config::ControlConfig,
     ground_state::GroundState,
+    loading::LoadTaskState,
     player::{
         collision::PlayerCollisionPlugin, control_systems::PlayerControlPlugin,
         input_systems::PlayerInputPlugin, normal_attacks::NormalAttackPlugin, skills::SkillPlugin,
@@ -92,7 +93,16 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<save_data::PlayerSaveData>()
+        app.init_resource::<save_data::PlayerSaveDataList>()
+            .init_resource::<save_data::PlayerSaveData>()
+            .add_systems(
+                Update,
+                save_data::load_player_save_data_list.run_if(in_state(GameState::Loading).and(
+                    |tasklist: Res<LoadTaskState>| {
+                        !tasklist.is_task_done(crate::loading::LoadTaskKind::PlayerSaveDataList)
+                    },
+                )),
+            )
             .add_plugins(PlayerInputPlugin)
             .add_plugins(PlayerCollisionPlugin)
             .add_plugins(PlayerControlPlugin)

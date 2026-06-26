@@ -22,16 +22,23 @@ impl Plugin for PlayerControlPlugin {
             )
             .add_systems(
                 Update,
-                ((
-                    update_x_velocity,
-                    update_jumping_timer,
-                    jump_action,
-                    down_action,
-                    call_attack,
-                )
-                    .chain())
-                .run_if(|stack: Res<SkillStack>| stack.is_ready() && !stack.is_activating)
-                .in_set(GameSysSet::Logic),
+                (
+                    ((
+                        update_x_velocity,
+                        update_jumping_timer,
+                        jump_action,
+                        down_action,
+                        call_attack,
+                    )
+                        .chain())
+                    .run_if(|stack: Res<SkillStack>| stack.is_ready() && !stack.is_activating)
+                    .in_set(GameSysSet::Logic),
+                    stop_while_cooldown
+                        .run_if(|stack: Res<SkillStack>| {
+                            !(stack.is_ready() && !stack.is_activating)
+                        })
+                        .in_set(GameSysSet::Logic),
+                ),
             );
     }
 }
@@ -93,6 +100,12 @@ fn update_x_velocity(
             next_vel *= status.run_speed.value();
         }
         velocity.linear = next_vel + normal * normal_vel;
+    }
+}
+
+fn stop_while_cooldown(mut que: Query<(&mut Velocity), With<Player>>) {
+    for (mut velocity) in &mut que {
+        velocity.linear = Vec2::ZERO;
     }
 }
 

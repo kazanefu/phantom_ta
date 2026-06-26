@@ -27,7 +27,7 @@ fn test_attack(
 ) {
     for _ in msg.read() {
         for (transform, status) in &mut player_que {
-            skill_stack.set_cooldown(1.0);
+            skill_stack.set_cooldown(0.4);
             commands.spawn((
                 AttackHitboxBundle::new(
                     40.0 * status.attack.value(),

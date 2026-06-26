@@ -177,7 +177,7 @@ impl Default for InputSetting {
                 None,
             ]),
             attack: KeyBindings::new([Some(InputKey::Mouse(MouseButton::Left)), None, None, None]),
-            end_app: KeyBindings::new([Some(Key(KeyCode::Backspace)), None, None, None]),
+            end_app: KeyBindings::new([Some(Key(KeyCode::Delete)), None, None, None]),
         }
     }
 }

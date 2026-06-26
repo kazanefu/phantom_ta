@@ -1,11 +1,11 @@
 use bevy::{
     input::keyboard::{Key, KeyboardInput},
+    picking::pointer::PointerId::Mouse,
     prelude::*,
 };
 
 const NORMAL_BACKGROUND: Color = Color::srgb(0.12, 0.12, 0.12);
-const HOVERED_BACKGROUND: Color = Color::srgb(0.18, 0.18, 0.18);
-const FOCUSED_BACKGROUND: Color = Color::srgb(0.16, 0.16, 0.16);
+const FOCUSED_BACKGROUND: Color = Color::srgb(0.06, 0.06, 0.06);
 const NORMAL_BORDER: Color = Color::srgb(0.35, 0.35, 0.35);
 const FOCUSED_BORDER: Color = Color::srgb(0.35, 0.7, 1.0);
 const TEXT_COLOR: Color = Color::WHITE;
@@ -15,33 +15,35 @@ pub struct InputFieldPlugin;
 
 impl Plugin for InputFieldPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<FocusedInputField>()
-            .add_message::<InputFieldSubmitted>()
-            .add_systems(
-                Update,
-                (
-                    validate_focused_input_field,
-                    handle_input_field_interaction,
-                    handle_input_field_ime_events,
-                    handle_input_field_keyboard_input,
-                    sync_input_field_visuals,
-                )
-                    .chain(),
-            );
+        app.init_resource::<FocusedInputField>().add_systems(
+            Update,
+            (
+                clear_focused_input_field,
+                set_focused_input_field,
+                update_background_color,
+                show_text_or_placeholder,
+                recieve_text_input,
+            )
+                .chain(),
+        );
     }
 }
 
 #[derive(Resource, Default)]
 struct FocusedInputField(Option<Entity>);
 
-#[derive(Component, Debug, Clone)]
+#[derive(Component, Debug, Clone, Default)]
 pub struct InputField {
     pub value: String,
     pub placeholder: String,
-    pub preedit: String,
     pub multiline: bool,
     pub max_length: Option<usize>,
-    pub ime_active: bool,
+    pub selected_background_color: Color,
+    pub unselected_background_color: Color,
+    pub value_text_color: Color,
+    pub placeholder_text_color: Color,
+    pub selected_border_color: Color,
+    pub unselected_border_color: Color,
 }
 
 impl InputField {
@@ -49,38 +51,15 @@ impl InputField {
         Self {
             value: String::new(),
             placeholder: placeholder.into(),
-            preedit: String::new(),
             multiline: false,
+            selected_background_color: FOCUSED_BACKGROUND,
+            unselected_background_color: NORMAL_BACKGROUND,
+            value_text_color: TEXT_COLOR,
+            selected_border_color: FOCUSED_BORDER,
+            unselected_border_color: NORMAL_BORDER,
+            placeholder_text_color: PLACEHOLDER_COLOR,
             max_length: None,
-            ime_active: false,
         }
-    }
-
-    fn visible_text(&self, focused: bool) -> String {
-        if self.value.is_empty() && self.preedit.is_empty() {
-            if focused {
-                "▏".to_string()
-            } else {
-                self.placeholder.clone()
-            }
-        } else {
-            let mut text = String::with_capacity(self.value.len() + self.preedit.len() + 1);
-            text.push_str(&self.value);
-            text.push_str(&self.preedit);
-            if focused {
-                text.push('▏');
-            }
-            text
-        }
-    }
-
-    fn clear_preedit(&mut self) {
-        self.preedit.clear();
-    }
-
-    fn set_preedit(&mut self, value: &str) {
-        self.preedit.clear();
-        self.preedit.push_str(value);
     }
 
     fn insert_text(&mut self, text: &str) {
@@ -104,6 +83,103 @@ impl InputField {
 
     fn backspace(&mut self) {
         self.value.pop();
+    }
+}
+
+fn clear_focused_input_field(
+    mut focused: ResMut<FocusedInputField>,
+    mouse_input: Res<ButtonInput<MouseButton>>,
+) {
+    if mouse_input.just_pressed(MouseButton::Left) {
+        focused.0 = None;
+    }
+}
+// after clear_focused
+fn set_focused_input_field(
+    mut focused_input_field: ResMut<FocusedInputField>,
+    mut interaction_query: Query<(Entity, &Interaction), (Changed<Interaction>, With<Button>)>,
+) {
+    for (entity, interaction) in interaction_query.iter_mut() {
+        match *interaction {
+            Interaction::Pressed => {
+                focused_input_field.0 = Some(entity);
+            }
+            _ => {}
+        }
+    }
+}
+
+fn update_background_color(
+    mut query: Query<(Entity, &mut BackgroundColor, &mut BorderColor, &InputField)>,
+    focused_input_field: Res<FocusedInputField>,
+) {
+    for (entity, mut background_color, mut border_color, input_field) in &mut query {
+        if Some(entity) == focused_input_field.0 {
+            *background_color = BackgroundColor(input_field.selected_background_color);
+            *border_color = BorderColor::all(input_field.selected_border_color);
+        } else {
+            *background_color = BackgroundColor(input_field.unselected_background_color);
+            *border_color = BorderColor::all(input_field.unselected_border_color);
+        }
+    }
+}
+
+fn show_text_or_placeholder(
+    mut query: Query<(Entity, &InputField, &mut Text, &mut TextColor)>,
+    focused_input_field: Res<FocusedInputField>,
+) {
+    use std::fmt::Write;
+    for (entity, input_field, mut text, mut text_color) in &mut query {
+        let contents: &str =
+            if input_field.value.is_empty() && Some(entity) != focused_input_field.0 {
+                text_color.0 = input_field.placeholder_text_color;
+                &input_field.placeholder
+            } else {
+                text_color.0 = input_field.value_text_color;
+                &input_field.value
+            };
+        text.clear();
+        unsafe {
+            // Use `unwrap_unchecked` to avoid bounds checking for performance
+            // This is safe because write! will not panic when writing to a String
+            write!(text, "{}", contents).unwrap_unchecked();
+        }
+    }
+}
+
+fn recieve_text_input(
+    mut events: MessageReader<KeyboardInput>,
+    mut que: Query<&mut InputField>,
+    focused_input_field: Res<FocusedInputField>,
+) {
+    let Some(focused_entity) = focused_input_field.0 else {
+        return;
+    };
+    let Ok(mut input_field) = que.get_mut(focused_entity) else {
+        return;
+    };
+    for event in events.read() {
+        if !event.state.is_pressed() {
+            continue;
+        }
+        match &event.logical_key {
+            Key::Backspace => {
+                input_field.backspace();
+            }
+            Key::Enter => {
+                if input_field.multiline {
+                    input_field.insert_text("\n");
+                }
+            }
+            Key::Escape => {
+                // Do nothing for now
+            }
+            _ => {
+                if let Some(c) = &event.text {
+                    input_field.insert_text(c);
+                }
+            }
+        }
     }
 }
 
@@ -147,188 +223,4 @@ impl InputFieldBundle {
             text_layout: TextLayout::new_with_justify(Justify::Left),
         }
     }
-}
-
-#[derive(Message, Debug, Clone)]
-pub struct InputFieldSubmitted {
-    pub entity: Entity,
-    pub value: String,
-}
-
-fn validate_focused_input_field(
-    mut focused: ResMut<FocusedInputField>,
-    mut windows: Single<&mut Window>,
-    field_query: Query<&InputField>,
-) {
-    let Some(entity) = focused.0 else {
-        return;
-    };
-
-    if field_query.get(entity).is_ok() {
-        return;
-    }
-
-    focused.0 = None;
-    windows.ime_enabled = false;
-}
-
-fn handle_input_field_interaction(
-    mut focused: ResMut<FocusedInputField>,
-    mut windows: Single<&mut Window>,
-    mut field_query: Query<(Entity, &Interaction, &mut InputField), Changed<Interaction>>,
-) {
-    for (entity, interaction, mut field) in &mut field_query {
-        if !matches!(*interaction, Interaction::Pressed) {
-            continue;
-        }
-
-        focused.0 = Some(entity);
-        field.ime_active = true;
-        let ime_position = windows.cursor_position().unwrap_or_default();
-        windows.ime_position = ime_position;
-        windows.ime_enabled = true;
-    }
-}
-
-fn handle_input_field_ime_events(
-    mut ime_reader: MessageReader<Ime>,
-    focused: Res<FocusedInputField>,
-    mut field_query: Query<&mut InputField>,
-    mut windows: Single<&mut Window>,
-) {
-    let Some(focused_entity) = focused.0 else {
-        return;
-    };
-
-    let Ok(mut field) = field_query.get_mut(focused_entity) else {
-        return;
-    };
-
-    for ime in ime_reader.read() {
-        match ime {
-            Ime::Preedit { value, cursor, .. } => {
-                if cursor.is_none() {
-                    field.clear_preedit();
-                } else {
-                    field.set_preedit(value);
-                }
-            }
-            Ime::Commit { value, .. } => {
-                field.clear_preedit();
-                field.insert_text(value);
-            }
-            Ime::Enabled { .. } => {
-                field.ime_active = true;
-                windows.ime_enabled = true;
-            }
-            Ime::Disabled { .. } => {
-                field.ime_active = false;
-                field.clear_preedit();
-                windows.ime_enabled = false;
-            }
-        }
-    }
-}
-
-fn handle_input_field_keyboard_input(
-    mut keyboard_reader: MessageReader<KeyboardInput>,
-    mut focused: ResMut<FocusedInputField>,
-    mut field_query: Query<&mut InputField>,
-    mut submit_writer: MessageWriter<InputFieldSubmitted>,
-    mut windows: Single<&mut Window>,
-) {
-    let Some(focused_entity) = focused.0 else {
-        return;
-    };
-
-    let Ok(mut field) = field_query.get_mut(focused_entity) else {
-        return;
-    };
-
-    for keyboard_input in keyboard_reader.read() {
-        if !keyboard_input.state.is_pressed() {
-            continue;
-        }
-
-        match (&keyboard_input.logical_key, &keyboard_input.text) {
-            (Key::Escape, _) => {
-                field.ime_active = false;
-                field.clear_preedit();
-                focused.0 = None;
-                windows.ime_enabled = false;
-            }
-            (Key::Backspace, _) if !field.ime_active => {
-                field.backspace();
-            }
-            (Key::Enter, _) if !field.ime_active => {
-                if field.multiline {
-                    field.insert_text("\n");
-                } else {
-                    submit_writer.write(InputFieldSubmitted {
-                        entity: focused_entity,
-                        value: field.value.clone(),
-                    });
-                }
-            }
-            (_, Some(inserted_text)) if !field.ime_active => {
-                if inserted_text.chars().all(is_printable_char) {
-                    field.insert_text(inserted_text);
-                }
-            }
-            _ => {}
-        }
-    }
-}
-
-fn sync_input_field_visuals(
-    focused: Res<FocusedInputField>,
-    mut field_query: Query<(
-        Entity,
-        &mut InputField,
-        &Interaction,
-        &mut Text,
-        &mut TextColor,
-        &mut BackgroundColor,
-        &mut BorderColor,
-    )>,
-) {
-    for (entity, mut field, interaction, mut text, mut text_color, mut background, mut border_color)
-        in &mut field_query
-    {
-        let is_focused = focused.0 == Some(entity);
-        let display_text = field.visible_text(is_focused);
-
-        field.ime_active = is_focused;
-        if !is_focused {
-            field.clear_preedit();
-        }
-
-        **text = display_text;
-        text_color.0 = if is_focused || !field.value.is_empty() {
-            TEXT_COLOR
-        } else {
-            PLACEHOLDER_COLOR
-        };
-        background.0 = if is_focused {
-            FOCUSED_BACKGROUND
-        } else {
-            match *interaction {
-                Interaction::Hovered => HOVERED_BACKGROUND,
-                _ => NORMAL_BACKGROUND,
-            }
-        };
-        *border_color = BorderColor::all(if is_focused {
-            FOCUSED_BORDER
-        } else {
-            NORMAL_BORDER
-        });
-    }
-}
-
-fn is_printable_char(chr: char) -> bool {
-    let is_in_private_use_area = ('\u{e000}'..='\u{f8ff}').contains(&chr)
-        || ('\u{f0000}'..='\u{ffffd}').contains(&chr)
-        || ('\u{100000}'..='\u{10fffd}').contains(&chr);
-
-    !is_in_private_use_area && !chr.is_ascii_control()
 }

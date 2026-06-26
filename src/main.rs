@@ -18,6 +18,7 @@ mod utils;
 
 pub use collision_groups::*;
 pub use game_state::GameState;
+pub use loading::JpFont;
 pub use utils::*;
 
 fn main() {
@@ -41,6 +42,7 @@ fn main() {
         }),
         ..default()
     }));
+    bevy::asset::embedded_asset!(app, "fonts/NotoSansJP-Bold.ttf");
     app.add_plugins(RapierPhysicsPlugin::<NoUserData>::default())
         .insert_resource(TimestepMode::Interpolated {
             dt: 1.0 / 120.0,

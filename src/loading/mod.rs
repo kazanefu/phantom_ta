@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{asset::embedded_asset, prelude::*};
 
 use crate::GameState;
 
@@ -6,11 +6,17 @@ pub struct LoadingPlugin;
 
 impl Plugin for LoadingPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<LoadTaskState>()
+        app
+            .init_resource::<LoadTaskState>()
+            .init_resource::<JpFont>()
             .add_systems(OnEnter(GameState::Loading), reset_loading_task_state)
             .add_systems(
                 Update,
-                check_complete_loading_task.run_if(in_state(GameState::Loading)),
+                (
+                    check_jp_font_loaded,
+                    check_complete_loading_task,
+                )
+                    .run_if(in_state(GameState::Loading)),
             );
     }
 }
@@ -20,10 +26,11 @@ impl Plugin for LoadingPlugin {
 pub enum LoadTaskKind {
     PlayerSaveDataList,
     Keymap,
+    JpFont,
 }
 
 impl LoadTaskKind {
-    const TOTAL: usize = 2;
+    const TOTAL: usize = 3;
 }
 
 #[derive(Resource, Default)]
@@ -49,6 +56,12 @@ impl LoadTaskState {
     }
 }
 
+#[derive(Resource, Clone, Default)]
+pub struct JpFont {
+    pub font: Handle<Font>,
+}
+
+
 fn check_complete_loading_task(
     load_task_state: ResMut<LoadTaskState>,
     mut next_state: ResMut<NextState<GameState>>,
@@ -63,4 +76,28 @@ fn check_complete_loading_task(
 
 fn reset_loading_task_state(mut load_task_state: ResMut<LoadTaskState>) {
     load_task_state.clear();
+}
+
+fn check_jp_font_loaded(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut load_task_state: ResMut<LoadTaskState>,
+    jp_font: Option<Res<JpFont>>,
+) {
+    if jp_font.is_none() {
+        let font = asset_server.load("embedded://phantom_ta/fonts/NotoSansJP-Bold.ttf");
+        commands.insert_resource(JpFont { font });
+        return;
+    }
+
+    let Some(jp_font) = jp_font else {
+        return;
+    };
+
+    if asset_server
+        .get_recursive_dependency_load_state(&jp_font.font)
+        .is_some_and(|state| state.is_loaded())
+    {
+        load_task_state.set_task_done(LoadTaskKind::JpFont);
+    }
 }

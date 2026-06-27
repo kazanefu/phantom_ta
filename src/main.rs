@@ -12,6 +12,7 @@ mod ground_state;
 mod loading;
 mod map;
 mod player;
+mod select_data;
 mod settings;
 mod test_scene;
 mod title;
@@ -62,6 +63,7 @@ fn main() {
         .add_plugins(character::CharacterPlugin)
         .add_plugins(player::PlayerPlugin)
         .add_plugins(title::TitlePlugin)
+        .add_plugins(select_data::SelectDataPlugin)
         .add_plugins(end_app::EndAppPlugin)
         .add_plugins(test_scene::TestScenePlugin)
         .run();

@@ -37,7 +37,7 @@ pub enum SkillSysSet {
 
 /// The player's skill build.
 /// chosen by the player from a list of available skills
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct SkillBuild {
     pub skills: [Option<SkillKind>; Self::DEFAULT_CAPACITY],
 }

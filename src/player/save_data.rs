@@ -28,7 +28,7 @@ impl PlayerSaveDataList {
     }
 }
 
-#[derive(Resource, Serialize, Deserialize)]
+#[derive(Resource, Serialize, Deserialize, Clone)]
 pub struct PlayerSaveData {
     pub id: usize,
     pub name: String,
@@ -66,7 +66,7 @@ impl SaveLoad for PlayerSaveDataList {
 }
 
 impl PlayerSaveDataList {
-    fn push_new_data(&mut self, name: impl Into<String>) {
+    pub fn push_new_data(&mut self, name: impl Into<String>) {
         let mut data = PlayerSaveData::default();
         data.name = name.into();
         data.id = self.list.len();

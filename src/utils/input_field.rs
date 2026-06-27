@@ -222,4 +222,30 @@ impl InputFieldBundle {
             text_layout: TextLayout::new_with_justify(Justify::Left),
         }
     }
+    pub fn new_center(placeholder: impl Into<String>, font: Handle<Font>) -> Self {
+        Self {
+            input_field: InputField::new(placeholder),
+            button: Button,
+            node: Node {
+                width: px(260),
+                height: px(36),
+                padding: UiRect::axes(px(8), px(6)),
+                border: UiRect::all(px(2)),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                border_radius: BorderRadius::all(px(6)),
+                ..default()
+            },
+            background_color: BackgroundColor(NORMAL_BACKGROUND),
+            border_color: BorderColor::all(NORMAL_BORDER),
+            text: Text::new(""),
+            text_font: TextFont {
+                font,
+                font_size: 20.0,
+                ..default()
+            },
+            text_color: TextColor(TEXT_COLOR),
+            text_layout: TextLayout::new_with_justify(Justify::Left),
+        }
+    }
 }

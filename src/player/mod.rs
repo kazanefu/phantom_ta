@@ -10,6 +10,8 @@ mod save_data;
 mod skills;
 mod status;
 
+pub use save_data::*;
+
 use crate::{
     GameState, PLAYER_GROUP,
     character::{Character, CharacterKind},

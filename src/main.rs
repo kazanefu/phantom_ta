@@ -11,9 +11,10 @@ mod game_system_set;
 mod ground_state;
 mod loading;
 mod map;
+mod menu;
 mod player;
-mod rooms;
 mod room_transition;
+mod rooms;
 mod select_data;
 mod settings;
 mod test_scene;
@@ -67,6 +68,7 @@ fn main() {
         .add_plugins(title::TitlePlugin)
         .add_plugins(select_data::SelectDataPlugin)
         .add_plugins(end_app::EndAppPlugin)
+        .add_plugins(menu::MenuPlugin)
         .add_plugins(test_scene::TestScenePlugin)
         .run();
 }

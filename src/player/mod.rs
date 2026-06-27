@@ -1,3 +1,4 @@
+use crate::loading::TaskState;
 use std::collections::HashSet;
 
 use bevy::prelude::*;

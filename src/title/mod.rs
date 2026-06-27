@@ -35,31 +35,40 @@ fn setup_title(mut commands: Commands, jp_font: Res<JpFont>) {
     // transition to next state(SavaDataSelect) button
     commands.spawn((
         DespawnOnExit(GameState::Title),
-        StartButton,
-        Button,
         Node {
-            width: Val::Px(280.0),
-            min_width: percent(20),
-            min_height: Val::Px(72.0),
-            padding: UiRect::axes(Val::Px(24.0), Val::Px(16.0)),
+            width: percent(100),
+            height: percent(100),
             justify_content: JustifyContent::Center,
             align_items: AlignItems::Center,
             ..default()
         },
-        BackgroundColor(Color::srgb(0.1, 0.9, 0.2)),
         children![(
+            StartButton,
+            Button,
             Node {
-                max_width: percent(100),
+                width: Val::Px(280.0),
+                min_width: percent(20),
+                min_height: Val::Px(72.0),
+                padding: UiRect::axes(Val::Px(24.0), Val::Px(16.0)),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
                 ..default()
             },
-            Text::new("スタート"),
-            TextFont {
-                font: jp_font.font.clone(),
-                font_size: 32.0,
-                ..default()
-            },
-            TextLayout::new_with_justify(Justify::Center),
-            TextColor(Color::srgb(0.2, 0.2, 0.2))
+            BackgroundColor(Color::srgb(0.1, 0.9, 0.2)),
+            children![(
+                Node {
+                    max_width: percent(100),
+                    ..default()
+                },
+                Text::new("スタート"),
+                TextFont {
+                    font: jp_font.font.clone(),
+                    font_size: 32.0,
+                    ..default()
+                },
+                TextLayout::new_with_justify(Justify::Center),
+                TextColor(Color::srgb(0.2, 0.2, 0.2))
+            )],
         )],
     ));
 }

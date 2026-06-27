@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
-
 use crate::file::{Ron, SaveLoad};
+use crate::loading::TaskState;
 use crate::loading::{LoadTaskKind, LoadTaskState};
+use serde::{Deserialize, Serialize};
 
 use super::*;
 

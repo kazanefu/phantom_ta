@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+mod save;
+
 use crate::GameState;
 
 pub struct LoadingPlugin;
@@ -33,20 +35,25 @@ pub struct LoadTaskState {
     tasks: [bool; LoadTaskKind::TOTAL],
 }
 
-impl LoadTaskState {
-    pub fn set_task_done(&mut self, kind: LoadTaskKind) {
+impl TaskKind for LoadTaskKind {
+    const TOTAL: usize = LoadTaskKind::TOTAL;
+}
+
+impl TaskState for LoadTaskState {
+    type Kind = LoadTaskKind;
+    fn set_task_done(&mut self, kind: LoadTaskKind) {
         self.tasks[kind as usize] = true;
     }
 
-    pub fn is_all_done(&self) -> bool {
+    fn is_all_done(&self) -> bool {
         self.tasks.iter().all(|&done| done)
     }
 
-    pub fn clear(&mut self) {
+    fn clear(&mut self) {
         self.tasks = [false; LoadTaskKind::TOTAL];
     }
 
-    pub fn is_task_done(&self, kind: LoadTaskKind) -> bool {
+    fn is_task_done(&self, kind: LoadTaskKind) -> bool {
         self.tasks[kind as usize]
     }
 }
@@ -94,4 +101,16 @@ fn check_jp_font_loaded(
     {
         load_task_state.set_task_done(LoadTaskKind::JpFont);
     }
+}
+
+pub trait TaskState {
+    type Kind: TaskKind;
+    fn set_task_done(&mut self, kind: Self::Kind);
+    fn is_all_done(&self) -> bool;
+    fn clear(&mut self);
+    fn is_task_done(&self, kind: Self::Kind) -> bool;
+}
+
+pub trait TaskKind {
+    const TOTAL: usize;
 }

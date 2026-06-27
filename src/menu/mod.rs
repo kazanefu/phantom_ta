@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 mod input;
+mod main_menu;
 
 pub struct MenuPlugin;
 

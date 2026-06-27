@@ -141,6 +141,7 @@ pub struct InputSetting {
     pub dash: KeyBindings,
     pub attack: KeyBindings,
     pub end_app: KeyBindings,
+    pub menu: KeyBindings,
 }
 
 impl Default for InputSetting {
@@ -178,6 +179,7 @@ impl Default for InputSetting {
             ]),
             attack: KeyBindings::new([Some(InputKey::Mouse(MouseButton::Left)), None, None, None]),
             end_app: KeyBindings::new([Some(Key(KeyCode::Delete)), None, None, None]),
+            menu: KeyBindings::new([Some(InputKey::Key(KeyCode::Escape)), None, None, None]),
         }
     }
 }

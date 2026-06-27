@@ -97,6 +97,7 @@ where
 pub trait SaveLoad: Sized + Default + serde::Serialize + serde::de::DeserializeOwned {
     const PATH: &'static str;
     type Format: SaveFormat;
+    const USE_APPLICATION_DATA_DIR: bool = true;
 
     fn load_default_path() -> anyhow::Result<Self> {
         Self::load(Self::PATH)
@@ -107,12 +108,20 @@ pub trait SaveLoad: Sized + Default + serde::Serialize + serde::de::DeserializeO
     }
 
     fn load<P: AsRef<Path>>(path: P) -> anyhow::Result<Self> {
-        let path = resolve_path(path);
+        let path = if Self::USE_APPLICATION_DATA_DIR {
+            resolve_path(path)
+        } else {
+            path.as_ref().to_path_buf()
+        };
         load_with_format::<Self, Self::Format>(&path)
     }
 
     fn save<P: AsRef<Path>>(&self, path: P) -> anyhow::Result<()> {
-        let path = resolve_path(path);
+        let path = if Self::USE_APPLICATION_DATA_DIR {
+            resolve_path(path)
+        } else {
+            path.as_ref().to_path_buf()
+        };
         save_with_format::<Self, Self::Format>(self, &path)
     }
 }

@@ -12,6 +12,8 @@ mod ground_state;
 mod loading;
 mod map;
 mod player;
+mod rooms;
+mod room_transition;
 mod select_data;
 mod settings;
 mod test_scene;

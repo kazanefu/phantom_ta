@@ -2,46 +2,7 @@
     list: [
         (
             id: 0,
-            name: "aaa",
-            level: 1.0,
-            available_skills: (true, false, false, false, false),
-            skill_build: (
-                skills: (None, None, None, None),
-            ),
-            available_checkpoints: [
-                0,
-            ],
-            last_checkpoint: 0,
-        ),
-        (
-            id: 1,
-            name: "hoge",
-            level: 1.0,
-            available_skills: (true, false, false, false, false),
-            skill_build: (
-                skills: (None, None, None, None),
-            ),
-            available_checkpoints: [
-                0,
-            ],
-            last_checkpoint: 0,
-        ),
-        (
-            id: 2,
-            name: "",
-            level: 1.0,
-            available_skills: (true, false, false, false, false),
-            skill_build: (
-                skills: (None, None, None, None),
-            ),
-            available_checkpoints: [
-                0,
-            ],
-            last_checkpoint: 0,
-        ),
-        (
-            id: 3,
-            name: "ddd",
+            name: "test_save_data",
             level: 1.0,
             available_skills: (true, false, false, false, false),
             skill_build: (

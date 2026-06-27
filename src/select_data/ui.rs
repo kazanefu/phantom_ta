@@ -15,11 +15,11 @@ fn add_data_button_bundle(font: Handle<Font>, name_entity: Entity) -> impl Bundl
         Button,
         AddDataButton { name_entity },
         Node {
-            width: percent(10.0),
+            width: percent(30.0),
             height: percent(5.0),
             ..default()
         },
-        BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
+        BackgroundColor(Color::srgb(0.55, 0.55, 0.55)),
         children![(
             Text::new("Add new data"),
             TextFont {
@@ -63,7 +63,7 @@ pub fn pressed_add_data(
 }
 
 #[derive(Component)]
-struct SaveDataSelectButton {
+pub struct SaveDataSelectButton {
     data_id: usize,
 }
 fn save_data_button(font: Handle<Font>, data: &PlayerSaveData) -> impl Bundle {
@@ -71,7 +71,7 @@ fn save_data_button(font: Handle<Font>, data: &PlayerSaveData) -> impl Bundle {
         Button,
         SaveDataSelectButton { data_id: data.id },
         Node {
-            width: percent(10.0),
+            width: percent(30.0),
             height: percent(5.0),
             ..default()
         },
@@ -86,6 +86,33 @@ fn save_data_button(font: Handle<Font>, data: &PlayerSaveData) -> impl Bundle {
             TextColor(Color::WHITE),
         )],
     )
+}
+
+pub fn pressed_save_data_button(
+    mut next_state: ResMut<NextState<GameState>>,
+    data_list: Res<PlayerSaveDataList>,
+    mut current_data: ResMut<PlayerSaveData>,
+    mut button_que: Query<
+        (&SaveDataSelectButton, &Interaction, &mut BackgroundColor),
+        (Changed<Interaction>, With<Button>),
+    >,
+) {
+    for (buton, interaction, mut background) in &mut button_que {
+        match *interaction {
+            Interaction::Pressed => {
+                if let Some(data) = data_list.list.get(buton.data_id) {
+                    *current_data = data.clone();
+                    next_state.set(GameState::Playing);
+                }
+            }
+            Interaction::Hovered => {
+                *background = BackgroundColor(Color::WHITE);
+            }
+            Interaction::None => {
+                *background = BackgroundColor(Color::srgb(0.15, 0.15, 0.15));
+            }
+        }
+    }
 }
 
 #[derive(Resource, Default)]
@@ -104,7 +131,7 @@ pub fn spawn_ui(
     let scroll_ui = ScrollUi::new(&mut commands, 100.0, 100.0);
     let name_input_field = commands
         .spawn(InputFieldBundle::new_center(
-            "Input Save Data Name",
+            "Input name here...",
             font.font.clone(),
         ))
         .id();

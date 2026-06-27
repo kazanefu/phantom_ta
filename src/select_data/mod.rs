@@ -14,7 +14,8 @@ impl Plugin for SelectDataPlugin {
             )
             .add_systems(
                 Update,
-                ui::pressed_add_data.run_if(in_state(GameState::SaveDataSelect)),
+                (ui::pressed_add_data, ui::pressed_save_data_button)
+                    .run_if(in_state(GameState::SaveDataSelect)),
             );
     }
 }

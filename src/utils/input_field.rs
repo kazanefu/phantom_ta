@@ -1,6 +1,5 @@
 use bevy::{
     input::keyboard::{Key, KeyboardInput},
-    picking::pointer::PointerId::Mouse,
     prelude::*,
 };
 

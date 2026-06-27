@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 use crate::{
-    InputField, InputFieldBundle, JpFont, ONE_WAY_PLATFORM_GROUP, follow::Follower,
+    GameState, InputField, InputFieldBundle, JpFont, ONE_WAY_PLATFORM_GROUP, follow::Follower,
     ground_state::Ground, player::PlayerBundle,
 };
 
@@ -12,7 +12,7 @@ pub struct TestScenePlugin;
 
 impl Plugin for TestScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_scene);
+        app.add_systems(OnEnter(GameState::Playing), setup_scene);
     }
 }
 

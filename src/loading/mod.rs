@@ -1,4 +1,4 @@
-use bevy::{asset::embedded_asset, prelude::*};
+use bevy::prelude::*;
 
 use crate::GameState;
 
@@ -6,16 +6,11 @@ pub struct LoadingPlugin;
 
 impl Plugin for LoadingPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .init_resource::<LoadTaskState>()
-            .init_resource::<JpFont>()
+        app.init_resource::<LoadTaskState>()
             .add_systems(OnEnter(GameState::Loading), reset_loading_task_state)
             .add_systems(
                 Update,
-                (
-                    check_jp_font_loaded,
-                    check_complete_loading_task,
-                )
+                (check_jp_font_loaded, check_complete_loading_task)
                     .run_if(in_state(GameState::Loading)),
             );
     }
@@ -61,14 +56,13 @@ pub struct JpFont {
     pub font: Handle<Font>,
 }
 
-
 fn check_complete_loading_task(
     load_task_state: ResMut<LoadTaskState>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
     if load_task_state.is_all_done() {
-        next_state.set(GameState::Start);
-        println!("All loading tasks are completed. Transitioning to Start state.");
+        next_state.set(GameState::Title);
+        println!("All loading tasks are completed. Transitioning to Title state.");
         return;
     }
     // println!("Loading...");

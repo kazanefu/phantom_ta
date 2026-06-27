@@ -64,3 +64,14 @@ impl SaveLoad for PlayerSaveDataList {
     const PATH: &'static str = "save_data/data.ron";
     type Format = Ron;
 }
+
+impl PlayerSaveDataList {
+    fn push_new_data(&mut self, name: impl Into<String>) {
+        let mut data = PlayerSaveData::default();
+        data.name = name.into();
+        data.id = self.list.len();
+        self.list.push(data);
+        self.save_default_path()
+            .unwrap_or_else(|e| eprintln!("Failed to save player save data list: {}", e));
+    }
+}

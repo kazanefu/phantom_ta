@@ -4,7 +4,7 @@ use bevy::prelude::*;
 pub enum GameState {
     #[default]
     Loading,
-    Start,
+    Title,
     SaveDataSelect,
     Playing,
     RoomTransition,

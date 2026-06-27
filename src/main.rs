@@ -14,6 +14,7 @@ mod map;
 mod player;
 mod settings;
 mod test_scene;
+mod title;
 mod utils;
 
 pub use collision_groups::*;
@@ -60,6 +61,7 @@ fn main() {
         .add_plugins(utils::UtilsPlugin)
         .add_plugins(character::CharacterPlugin)
         .add_plugins(player::PlayerPlugin)
+        .add_plugins(title::TitlePlugin)
         .add_plugins(end_app::EndAppPlugin)
         .add_plugins(test_scene::TestScenePlugin)
         .run();

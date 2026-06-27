@@ -1,6 +1,6 @@
 use bevy::{input::mouse::MouseMotion, prelude::*};
 
-use crate::{config::PlayerConfig, game_system_set::GameSysSet, player::Player};
+use crate::{config::PlayerConfig, game_system_set::GameSysSet, player::Player, time::TimeState};
 
 pub struct PlayerInputPlugin;
 
@@ -25,7 +25,8 @@ impl Plugin for PlayerInputPlugin {
                     dash_input,
                     attack_input,
                 )
-                    .in_set(GameSysSet::Input),
+                    .in_set(GameSysSet::Input)
+                    .run_if(in_state(TimeState::Running)),
             );
     }
 }

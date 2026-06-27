@@ -5,6 +5,7 @@ pub mod file;
 pub mod follow;
 pub mod input_field;
 pub mod scroll_ui;
+pub mod time;
 
 pub use input_field::*;
 
@@ -16,6 +17,7 @@ impl Plugin for UtilsPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(follow::FollowPlugins);
         app.add_plugins(input_field::InputFieldPlugin)
-            .add_plugins(ScrollUiPlugin);
+            .add_plugins(ScrollUiPlugin)
+            .add_plugins(time::TimePlugin);
     }
 }

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::{game_system_set::GameSysSet, player::status::PlayerStatus};
+use crate::{game_system_set::GameSysSet, player::status::PlayerStatus, time::TimeState};
 
 pub struct SkillPlugin;
 
@@ -13,6 +13,7 @@ impl Plugin for SkillPlugin {
                 Update,
                 (SkillSysSet::Activation, SkillSysSet::Execution)
                     .chain()
+                    .run_if(in_state(TimeState::Running))
                     .in_set(GameSysSet::Logic),
             )
             .add_systems(

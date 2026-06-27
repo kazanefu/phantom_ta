@@ -7,6 +7,7 @@ use crate::{
         input_systems::{AttackMsg, DashMsg, DownInput, JumpMsg, MoveXInput},
         skills::SkillStack,
     },
+    time::TimeState,
 };
 
 pub struct PlayerControlPlugin;
@@ -38,7 +39,8 @@ impl Plugin for PlayerControlPlugin {
                             !(stack.is_ready() && !stack.is_activating)
                         })
                         .in_set(GameSysSet::Logic),
-                ),
+                )
+                    .run_if(in_state(TimeState::Running)),
             );
     }
 }

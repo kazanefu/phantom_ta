@@ -1,6 +1,7 @@
 use crate::{
     character::AttackHitboxBundle,
     player::{control_systems::NormalAttackMsg, input_systems::MousePosition, skills::SkillStack},
+    time::TimeState,
 };
 
 use super::*;
@@ -11,9 +12,11 @@ impl Plugin for TestAttackPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            test_attack.run_if(|current_attack: Res<CurrentNormalAttack>| {
-                current_attack.kind == NormalAttackKind::TestAttack
-            }),
+            test_attack
+                .run_if(|current_attack: Res<CurrentNormalAttack>| {
+                    current_attack.kind == NormalAttackKind::TestAttack
+                })
+                .run_if(in_state(TimeState::Running)),
         );
     }
 }

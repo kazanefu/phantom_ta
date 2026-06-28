@@ -1,6 +1,6 @@
 use crate::file::{Ron, SaveLoad};
-use crate::loading::TaskState;
-use crate::loading::{LoadTaskKind, LoadTaskState};
+use crate::loading::{LoadTaskKind, LoadTaskState, SaveTaskKind};
+use crate::loading::{SaveTaskState, TaskState};
 use serde::{Deserialize, Serialize};
 
 use super::*;
@@ -18,6 +18,18 @@ pub fn load_player_save_data_list(
     res.set_id();
     tasklist.set_task_done(LoadTaskKind::PlayerSaveDataList);
     println!("done load player save data list");
+}
+
+pub fn save_player_save_data_list(
+    res: Res<PlayerSaveDataList>,
+    mut tasklist: ResMut<SaveTaskState>,
+) {
+    res.save_default_path().unwrap_or_else(|e| {
+        eprintln!("Failed to save player save data list: {}", e);
+        return;
+    });
+    tasklist.set_task_done(SaveTaskKind::PlayerSaveDataList);
+    println!("done save player save data list");
 }
 
 impl PlayerSaveDataList {

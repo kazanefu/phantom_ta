@@ -1,4 +1,4 @@
-use crate::loading::TaskState;
+use crate::loading::{SaveTaskState, SavingState, TaskState};
 use std::collections::HashSet;
 
 use bevy::prelude::*;
@@ -103,6 +103,14 @@ impl Plugin for PlayerPlugin {
                 save_data::load_player_save_data_list.run_if(in_state(GameState::Loading).and(
                     |tasklist: Res<LoadTaskState>| {
                         !tasklist.is_task_done(crate::loading::LoadTaskKind::PlayerSaveDataList)
+                    },
+                )),
+            )
+            .add_systems(
+                Update,
+                save_data::save_player_save_data_list.run_if(in_state(SavingState::Saving).and(
+                    |tasklist: Res<SaveTaskState>| {
+                        !tasklist.is_task_done(crate::loading::SaveTaskKind::PlayerSaveDataList)
                     },
                 )),
             )

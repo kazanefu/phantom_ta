@@ -6,7 +6,12 @@ pub struct SavePlugin;
 
 impl Plugin for SavePlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<SavingState>();
+        app.init_state::<SavingState>()
+            .add_systems(OnEnter(SavingState::Saving), reset_saving_task_state)
+            .add_systems(
+                Update,
+                check_complete_saving_task.run_if(in_state(SavingState::Saving)),
+            );
     }
 }
 
@@ -45,5 +50,20 @@ impl super::TaskState for SaveTaskState {
     }
     fn is_task_done(&self, kind: Self::Kind) -> bool {
         self.tasks[kind as usize]
+    }
+}
+
+use super::TaskState;
+
+fn reset_saving_task_state(mut tasklist: ResMut<SaveTaskState>) {
+    tasklist.clear();
+}
+
+fn check_complete_saving_task(
+    tasklist: Res<SaveTaskState>,
+    mut state: ResMut<NextState<SavingState>>,
+) {
+    if tasklist.is_all_done() {
+        state.set(SavingState::Completed);
     }
 }

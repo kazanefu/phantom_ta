@@ -2,6 +2,8 @@ use bevy::prelude::*;
 
 mod save;
 
+pub use save::*;
+
 use crate::GameState;
 
 pub struct LoadingPlugin;
@@ -9,6 +11,7 @@ pub struct LoadingPlugin;
 impl Plugin for LoadingPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<LoadTaskState>()
+            .add_plugins(save::SavePlugin)
             .add_systems(OnEnter(GameState::Loading), reset_loading_task_state)
             .add_systems(
                 Update,

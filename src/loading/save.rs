@@ -7,6 +7,7 @@ pub struct SavePlugin;
 impl Plugin for SavePlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<SavingState>()
+            .init_resource::<SaveTaskState>()
             .add_systems(OnEnter(SavingState::Saving), reset_saving_task_state)
             .add_systems(
                 Update,

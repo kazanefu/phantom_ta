@@ -21,9 +21,14 @@ pub fn load_player_save_data_list(
 }
 
 pub fn save_player_save_data_list(
-    res: Res<PlayerSaveDataList>,
+    mut res: ResMut<PlayerSaveDataList>,
+    current_data: Res<PlayerSaveData>,
     mut tasklist: ResMut<SaveTaskState>,
 ) {
+    res.list
+        .iter_mut()
+        .find(|data| data.id == current_data.id)
+        .map(|data| *data = current_data.clone());
     res.save_default_path().unwrap_or_else(|e| {
         eprintln!("Failed to save player save data list: {}", e);
         return;

@@ -14,7 +14,7 @@ impl Plugin for TestAttackPlugin {
             Update,
             test_attack
                 .run_if(|current_attack: Res<CurrentNormalAttack>| {
-                    current_attack.kind == NormalAttackKind::TestAttack
+                    current_attack.kind == SkillKind::TestNormalAttack
                 })
                 .run_if(in_state(TimeState::Running)),
         );

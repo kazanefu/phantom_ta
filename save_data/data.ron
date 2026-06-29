@@ -2,9 +2,9 @@
     list: [
         (
             id: 0,
-            name: "test_save_data",
+            name: "default_data",
             level: 1.0,
-            available_skills: (true, false, false, false, false),
+            available_skills: (true, false, false, false, false, false),
             skill_build: (
                 skills: (None, None, None, None),
             ),

@@ -1,3 +1,5 @@
+use crate::player::skills::SkillKind;
+
 use super::*;
 
 mod test_attack;
@@ -11,15 +13,15 @@ impl Plugin for NormalAttackPlugin {
     }
 }
 
-#[derive(Resource, Default)]
+#[derive(Resource)]
 pub struct CurrentNormalAttack {
-    pub kind: NormalAttackKind,
+    pub kind: SkillKind,
 }
 
-#[repr(u8)]
-#[derive(Default, Copy, Clone, PartialEq, Eq, Hash, Debug)]
-pub enum NormalAttackKind {
-    #[default]
-    TestAttack,
-    TestAttack2,
+impl Default for CurrentNormalAttack {
+    fn default() -> Self {
+        Self {
+            kind: SkillKind::TestNormalAttack,
+        }
+    }
 }

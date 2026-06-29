@@ -162,6 +162,7 @@ impl SkillActivateMsg {
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SkillKind {
+    TestNormalAttack,
     TestSkill,
     TestSkill2,
     UnconditionalJump,
@@ -170,9 +171,10 @@ pub enum SkillKind {
 }
 
 impl SkillKind {
-    pub const NUM_SKILLS: usize = 5;
+    pub const NUM_SKILLS: usize = 6;
     pub fn cooldown(self) -> f32 {
         match self {
+            Self::TestNormalAttack => 0.5,
             Self::TestSkill => 1.0,
             Self::TestSkill2 => 2.0,
             Self::UnconditionalJump => 0.0,

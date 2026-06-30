@@ -15,20 +15,25 @@ fn switch_menu_input(
     mouse: Res<ButtonInput<MouseButton>>,
     config: Res<PlayerConfig>,
     now_time_state: Res<State<TimeState>>,
+    now_menu_state: Res<State<MenuState>>,
     mut next_time_state: ResMut<NextState<TimeState>>,
     mut menu_state: ResMut<NextState<MenuState>>,
 ) {
     if !config.input.menu.just_pressed(&keyboard, &mouse) {
         return;
     }
-    match now_time_state.get() {
-        TimeState::Paused => {
+    match (now_time_state.get(), now_menu_state.get()) {
+        (TimeState::Paused, MenuState::MainMenu) => {
             next_time_state.set(TimeState::Running);
             menu_state.set(MenuState::Closed);
         }
-        TimeState::Running => {
+        (TimeState::Running, MenuState::Closed) => {
             next_time_state.set(TimeState::Paused);
             menu_state.set(MenuState::MainMenu);
         }
+        (TimeState::Paused, _) => {
+            menu_state.set(MenuState::MainMenu);
+        }
+        _ => {}
     }
 }

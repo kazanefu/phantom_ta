@@ -16,7 +16,7 @@ impl Plugin for TestScenePlugin {
     }
 }
 
-fn setup_scene(mut commands: Commands, jp_font: Res<JpFont>) {
+fn setup_scene(mut commands: Commands) {
     commands.spawn((
         RigidBody::Fixed,
         Transform::from_xyz(0.0, -30.0, 0.0).with_rotation(Quat::from_rotation_z(0.0)),
@@ -71,5 +71,4 @@ fn setup_scene(mut commands: Commands, jp_font: Res<JpFont>) {
             follow_speed: 0.5,
         },
     ));
-    commands.spawn(InputFieldBundle::new("Input here:", jp_font.font.clone()));
 }

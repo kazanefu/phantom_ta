@@ -6,7 +6,7 @@
             level: 1.0,
             available_skills: (true, true, false, false, false, false),
             skill_build: (
-                skills: (Some(TestNormalAttack), None, None, None, None),
+                skills: (Some(TestNormalAttack), Some(TestNormalAttack), Some(TestSkill), None, None),
             ),
             available_checkpoints: [
                 0,

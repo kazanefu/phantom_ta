@@ -11,7 +11,19 @@ pub struct SkillBuildingPlugin;
 
 impl Plugin for SkillBuildingPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(MenuState::SkillBuilding), spawn_skill_building);
+        app.add_systems(OnEnter(MenuState::SkillBuilding), spawn_skill_building)
+            .add_message::<select_system::ReloadSkillBuildMsg>()
+            .init_resource::<select_system::SelectedSelectedButton>()
+            .add_systems(
+                Update,
+                (
+                    select_system::selected_pressed,
+                    select_system::candidate_pressed,
+                    select_system::reload_selected_skill_button,
+                )
+                    .chain()
+                    .run_if(in_state(MenuState::SkillBuilding)),
+            );
     }
 }
 
@@ -58,6 +70,8 @@ struct SelectedSkillButton {
     id: usize, // 0..=4, 0 is Normal Attack
     skill: Option<SkillKind>,
 }
+#[derive(Component)]
+struct SelectedSkillButtonText;
 fn selected_skill_button(
     id: usize,
     font: Handle<Font>,
@@ -77,6 +91,7 @@ fn selected_skill_button(
         },
         BackgroundColor(Color::srgba(0.2, 0.2, 0.2, 1.0)),
         children![(
+            SelectedSkillButtonText,
             Node {
                 max_height: percent(100.0),
                 max_width: percent(100.0),

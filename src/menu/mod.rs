@@ -20,7 +20,6 @@ pub enum MenuState {
     #[default]
     Closed,
     MainMenu,
-    NormalAttackSelect,
     SkillBuilding,
     Status,
 }

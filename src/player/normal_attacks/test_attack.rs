@@ -1,6 +1,10 @@
 use crate::{
     character::AttackHitboxBundle,
-    player::{control_systems::NormalAttackMsg, input_systems::MousePosition, skills::SkillStack},
+    player::{
+        control_systems::NormalAttackMsg,
+        input_systems::MousePosition,
+        skills::{SkillActivateMsg, SkillStack},
+    },
     time::TimeState,
 };
 
@@ -13,8 +17,8 @@ impl Plugin for TestAttackPlugin {
         app.add_systems(
             Update,
             test_attack
-                .run_if(|current_attack: Res<CurrentNormalAttack>| {
-                    current_attack.kind == SkillKind::TestNormalAttack
+                .run_if(|current_attack: Res<PlayerSaveData>| {
+                    current_attack.skill_build.skills[0] == Some(SkillKind::TestNormalAttack)
                 })
                 .run_if(in_state(TimeState::Running)),
         );
@@ -24,11 +28,14 @@ impl Plugin for TestAttackPlugin {
 fn test_attack(
     mut commands: Commands,
     mut player_que: Query<(&Transform, &PlayerStatus), With<Player>>,
-    mut msg: MessageReader<NormalAttackMsg>,
+    mut msg: MessageReader<SkillActivateMsg>,
     mouse_pos: Res<MousePosition>,
     mut skill_stack: ResMut<SkillStack>,
 ) {
-    for _ in msg.read() {
+    for skill in msg.read() {
+        if skill.skill_kind != SkillKind::TestNormalAttack {
+            continue;
+        }
         for (transform, status) in &mut player_que {
             skill_stack.set_cooldown(0.4);
             commands.spawn((

@@ -5,7 +5,7 @@ use crate::{
     ground_state::GroundState,
     player::{
         input_systems::{AttackMsg, DashMsg, DownInput, JumpMsg, MoveXInput},
-        skills::SkillStack,
+        skills::{SkillActivateMsg, SkillKind, SkillStack},
     },
     time::TimeState,
 };
@@ -165,13 +165,18 @@ pub struct NormalAttackMsg;
 fn call_attack(
     mut stack: ResMut<SkillStack>,
     mut msg: MessageReader<AttackMsg>,
-    mut normal_attack: MessageWriter<NormalAttackMsg>,
+    mut skill_activate_msg: MessageWriter<SkillActivateMsg>,
+    save_data: Res<PlayerSaveData>,
 ) {
     for _ in msg.read() {
         if !stack.is_empty() {
             stack.activate();
         } else {
-            normal_attack.write(NormalAttackMsg);
+            skill_activate_msg.write(SkillActivateMsg {
+                skill_index: 0,
+                skill_kind: save_data.skill_build.skills[0]
+                    .unwrap_or(SkillKind::DEFAULT_NORMAL_ATTACK),
+            });
         }
     }
 }

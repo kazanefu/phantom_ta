@@ -53,7 +53,6 @@ pub struct PlayerSaveData {
     pub level: f32,
     pub available_skills: [bool; skills::SkillKind::NUM_SKILLS],
     pub skill_build: skills::SkillBuild,
-    pub normal_attack: skills::SkillKind,
     pub available_checkpoints: HashSet<usize>,
     pub last_checkpoint: usize,
 }
@@ -74,7 +73,6 @@ impl Default for PlayerSaveData {
             level: 1.0,
             available_skills: AVAILABLE_SKILLS,
             skill_build: skills::SkillBuild::default(),
-            normal_attack: skills::SkillKind::DEFAULT_NORMAL_ATTACK,
             available_checkpoints: available_checkpoints,
             last_checkpoint: 0,
         }

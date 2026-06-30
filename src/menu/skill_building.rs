@@ -52,7 +52,7 @@ fn skill_building_candidate_skills_canvas() -> impl Bundle {
 
 #[derive(Component)]
 struct SelectedSkillButton {
-    id: usize, // 0..4
+    id: usize, // 0..=4, 0 is Normal Attack
     skill: Option<SkillKind>,
 }
 fn selected_skill_button(

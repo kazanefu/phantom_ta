@@ -47,12 +47,18 @@ pub struct SkillBuild {
 }
 
 impl SkillBuild {
-    const DEFAULT_CAPACITY: usize = 4;
+    const DEFAULT_CAPACITY: usize = 5;
 }
 impl Default for SkillBuild {
     fn default() -> Self {
         Self {
-            skills: [None, None, None, None],
+            skills: [
+                Some(SkillKind::DEFAULT_NORMAL_ATTACK),
+                None,
+                None,
+                None,
+                None,
+            ],
         }
     }
 }

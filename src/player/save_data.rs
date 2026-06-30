@@ -92,3 +92,17 @@ impl PlayerSaveDataList {
             .unwrap_or_else(|e| eprintln!("Failed to save player save data list: {}", e));
     }
 }
+
+impl PlayerSaveData {
+    pub const MAX_EXP: f32 = 10000.0;
+    /// Level = 1.0 + 99.0 * sqrt(amount_exp / MAX_EXP) , 1 <= Level <= 100
+    pub fn level_up(&mut self, exp: f32) -> f32 {
+        let mut amount_exp = Self::MAX_EXP * ((self.level - 1.0) / 99.0).powi(2);
+        amount_exp += exp;
+        if amount_exp > Self::MAX_EXP {
+            amount_exp = Self::MAX_EXP;
+        }
+        self.level = 1.0 + 99.0 * (amount_exp / Self::MAX_EXP).sqrt();
+        self.level
+    }
+}

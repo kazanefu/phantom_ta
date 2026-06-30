@@ -8,7 +8,7 @@ mod control_systems;
 mod input_systems;
 mod normal_attacks;
 mod save_data;
-mod skills;
+pub mod skills;
 mod status;
 
 pub use save_data::*;

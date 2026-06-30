@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
+use strum::{EnumCount, IntoEnumIterator};
+use strum_macros::{EnumCount, EnumIter, IntoStaticStr};
+
 use crate::{game_system_set::GameSysSet, player::status::PlayerStatus, time::TimeState};
 
 pub struct SkillPlugin;
@@ -160,7 +163,9 @@ impl SkillActivateMsg {
 }
 
 #[repr(u8)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, EnumIter, EnumCount, IntoStaticStr,
+)]
 pub enum SkillKind {
     TestNormalAttack,
     TestSkill,
@@ -171,7 +176,7 @@ pub enum SkillKind {
 }
 
 impl SkillKind {
-    pub const NUM_SKILLS: usize = 6;
+    pub const NUM_SKILLS: usize = Self::COUNT;
     pub fn cooldown(self) -> f32 {
         match self {
             Self::TestNormalAttack => 0.5,
@@ -188,7 +193,21 @@ impl SkillKind {
             _ => 1,
         }
     }
-    pub fn index(self) -> usize {
+    pub const fn index(self) -> usize {
         self as usize
+    }
+    pub const DEFAULT_NORMAL_ATTACK: Self = Self::TestNormalAttack;
+    pub const DEFAULT_SKILL: Self = Self::TestSkill;
+}
+
+impl TryFrom<usize> for SkillKind {
+    type Error = ();
+
+    fn try_from(value: usize) -> Result<Self, Self::Error> {
+        if value < Self::NUM_SKILLS {
+            Ok(unsafe { std::mem::transmute(value as u8) })
+        } else {
+            Err(())
+        }
     }
 }

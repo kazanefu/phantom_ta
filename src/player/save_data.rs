@@ -2,6 +2,7 @@ use crate::file::{Ron, SaveLoad};
 use crate::loading::{LoadTaskKind, LoadTaskState, SaveTaskKind};
 use crate::loading::{SaveTaskState, TaskState};
 use serde::{Deserialize, Serialize};
+use strum::IntoEnumIterator;
 
 use super::*;
 
@@ -49,18 +50,20 @@ impl PlayerSaveDataList {
 pub struct PlayerSaveData {
     pub id: usize,
     pub name: String,
-    level: f32,
-    available_skills: [bool; skills::SkillKind::NUM_SKILLS],
-    skill_build: skills::SkillBuild,
-    available_checkpoints: HashSet<usize>,
-    last_checkpoint: usize,
+    pub level: f32,
+    pub available_skills: [bool; skills::SkillKind::NUM_SKILLS],
+    pub skill_build: skills::SkillBuild,
+    pub normal_attack: skills::SkillKind,
+    pub available_checkpoints: HashSet<usize>,
+    pub last_checkpoint: usize,
 }
 
 impl Default for PlayerSaveData {
     fn default() -> Self {
         const AVAILABLE_SKILLS: [bool; skills::SkillKind::NUM_SKILLS] = {
             let mut temp = [false; skills::SkillKind::NUM_SKILLS];
-            temp[0] = true;
+            temp[skills::SkillKind::DEFAULT_NORMAL_ATTACK.index()] = true;
+            temp[skills::SkillKind::DEFAULT_SKILL.index()] = true;
             temp
         };
         let mut available_checkpoints = HashSet::new();
@@ -71,6 +74,7 @@ impl Default for PlayerSaveData {
             level: 1.0,
             available_skills: AVAILABLE_SKILLS,
             skill_build: skills::SkillBuild::default(),
+            normal_attack: skills::SkillKind::DEFAULT_NORMAL_ATTACK,
             available_checkpoints: available_checkpoints,
             last_checkpoint: 0,
         }
@@ -104,5 +108,8 @@ impl PlayerSaveData {
         }
         self.level = 1.0 + 99.0 * (amount_exp / Self::MAX_EXP).sqrt();
         self.level
+    }
+    pub fn available_skills(&self) -> impl Iterator<Item = skills::SkillKind> {
+        skills::SkillKind::iter().filter(|skill| self.available_skills[skill.index()])
     }
 }

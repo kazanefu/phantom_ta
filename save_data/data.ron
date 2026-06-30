@@ -2,12 +2,13 @@
     list: [
         (
             id: 0,
-            name: "default_data",
+            name: "test_data",
             level: 1.0,
-            available_skills: (true, false, false, false, false, false),
+            available_skills: (true, true, false, false, false, false),
             skill_build: (
                 skills: (None, None, None, None),
             ),
+            normal_attack: TestNormalAttack,
             available_checkpoints: [
                 0,
             ],

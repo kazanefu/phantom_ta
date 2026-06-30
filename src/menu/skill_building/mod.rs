@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+mod select_system;
 
 use crate::{
     JpFont,
@@ -32,6 +33,7 @@ fn skill_building_selected_skill_canvas() -> impl Bundle {
             width: percent(90.0),
             height: percent(30.0),
             flex_direction: FlexDirection::Row,
+            column_gap: px(10.0),
             ..default()
         },
         BackgroundColor(Color::srgba(0.05, 0.05, 0.05, 0.7)),
@@ -44,9 +46,10 @@ fn skill_building_candidate_skills_canvas() -> impl Bundle {
             width: percent(90.0),
             height: percent(70.0),
             flex_direction: FlexDirection::Row,
+            column_gap: px(10.0),
             ..default()
         },
-        BackgroundColor(Color::srgba(0.05, 0.05, 0.05, 0.7)),
+        BackgroundColor(Color::srgba(0.3, 0.3, 0.3, 0.7)),
     )
 }
 
@@ -60,6 +63,7 @@ fn selected_skill_button(
     font: Handle<Font>,
     current_skill: Option<SkillKind>,
 ) -> impl Bundle {
+    let skill_name: &'static str = current_skill.map_or("None", |s| s.into());
     (
         SelectedSkillButton {
             id,
@@ -78,7 +82,7 @@ fn selected_skill_button(
                 max_width: percent(100.0),
                 ..default()
             },
-            Text::new("None"),
+            Text::new(skill_name),
             TextFont {
                 font,
                 font_size: 20.0,

@@ -33,6 +33,7 @@ fn skill_building_base_canvas() -> impl Bundle {
             width: percent(50.0),
             height: percent(100.0),
             flex_direction: FlexDirection::Column,
+            flex_wrap: FlexWrap::Wrap,
             ..default()
         },
         BackgroundColor(Color::srgba(0.1, 0.1, 0.1, 0.5)),
@@ -45,7 +46,9 @@ fn skill_building_selected_skill_canvas() -> impl Bundle {
             width: percent(90.0),
             height: percent(30.0),
             flex_direction: FlexDirection::Row,
+            flex_wrap: FlexWrap::Wrap,
             column_gap: px(10.0),
+            row_gap: px(3.0),
             ..default()
         },
         BackgroundColor(Color::srgba(0.05, 0.05, 0.05, 0.7)),
@@ -59,6 +62,8 @@ fn skill_building_candidate_skills_canvas() -> impl Bundle {
             height: percent(70.0),
             flex_direction: FlexDirection::Row,
             column_gap: px(10.0),
+            row_gap: px(0.0),
+            flex_wrap: FlexWrap::Wrap,
             ..default()
         },
         BackgroundColor(Color::srgba(0.3, 0.3, 0.3, 0.7)),
@@ -85,8 +90,8 @@ fn selected_skill_button(
         },
         Button,
         Node {
-            width: percent(10.0),
-            height: percent(10.0),
+            width: percent(40.0),
+            height: percent(20.0),
             ..default()
         },
         BackgroundColor(Color::srgba(0.2, 0.2, 0.2, 1.0)),
@@ -120,7 +125,7 @@ fn candidate_skill_button(skill: SkillKind, font: Handle<Font>) -> impl Bundle {
         CandidateSkillButton { skill },
         Button,
         Node {
-            width: percent(10.0),
+            width: percent(40.0),
             height: percent(10.0),
             ..default()
         },

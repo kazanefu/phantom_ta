@@ -5,7 +5,7 @@ use strum::{EnumCount, IntoEnumIterator};
 use strum_macros::{EnumCount, EnumIter, IntoStaticStr};
 
 use crate::{game_system_set::GameSysSet, player::status::PlayerStatus, time::TimeState};
-
+mod ui;
 pub struct SkillPlugin;
 
 impl Plugin for SkillPlugin {
@@ -29,7 +29,8 @@ impl Plugin for SkillPlugin {
                 )
                     .chain(),)
                     .in_set(SkillSysSet::Activation),
-            );
+            )
+            .add_plugins(ui::PlayerSkillUiPlugin);
     }
 }
 

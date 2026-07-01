@@ -19,7 +19,7 @@
             level: 1.0,
             available_skills: (true, true, true, true, true, true),
             skill_build: (
-                skills: (Some(UnconditionalJump), Some(TestNormalAttack), Some(TestSkill), Some(ParallelProcessing), Some(UnconditionalJump)),
+                skills: (Some(TestNormalAttack), Some(TestNormalAttack), Some(TestSkill), Some(ParallelProcessing), Some(UnconditionalJump)),
             ),
             available_checkpoints: [
                 0,

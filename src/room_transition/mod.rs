@@ -1,17 +1,69 @@
 use bevy::prelude::*;
 
-use crate::rooms::RoomGateId;
+use crate::{
+    GameState,
+    rooms::{Room, RoomGateId},
+};
 
 const TRANSITION_DURATION: f32 = 1.0;
 
 pub struct RoomTransitionPlugin;
 
 impl Plugin for RoomTransitionPlugin {
-    fn build(&self, app: &mut App) {}
+    fn build(&self, app: &mut App) {
+        app.init_resource::<RoomTransition>()
+            .add_systems(OnEnter(GameState::RoomTransition), reset_timer_system)
+            .add_systems(
+                Update,
+                poll_transition_system.run_if(in_state(GameState::RoomTransition)),
+            );
+    }
 }
 
-#[derive(Component)]
+#[derive(Resource)]
 pub struct RoomTransition {
     pub timer: Timer,
-    pub next_gate_id: RoomGateId,
+    next_gate_id: Option<RoomGateId>,
+}
+
+#[derive(Resource, Default)]
+pub struct CurrentRoom {
+    id: RoomGateId,
+}
+impl Default for RoomTransition {
+    fn default() -> Self {
+        Self {
+            timer: Timer::from_seconds(TRANSITION_DURATION, TimerMode::Once),
+            next_gate_id: None,
+        }
+    }
+}
+impl RoomTransition {
+    pub fn set_next_gate_id(&mut self, next_gate_id: RoomGateId) {
+        self.next_gate_id = Some(next_gate_id);
+    }
+
+    fn reset(&mut self) {
+        self.timer.reset();
+    }
+}
+
+fn reset_timer_system(mut transition: ResMut<RoomTransition>) {
+    transition.reset();
+}
+
+fn poll_transition_system(
+    time: Res<Time>,
+    mut transition: ResMut<RoomTransition>,
+    mut current_room: ResMut<CurrentRoom>,
+    mut next_state: ResMut<NextState<GameState>>,
+) {
+    transition.timer.tick(time.delta());
+    if transition.timer.is_finished() {
+        if let Some(next_gate_id) = transition.next_gate_id {
+            current_room.id = next_gate_id;
+            transition.next_gate_id = None;
+            next_state.set(GameState::Playing)
+        }
+    }
 }

@@ -7,7 +7,7 @@ use crate::file::{Ron, SaveLoad};
 
 mod items;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct RoomGateId {
     pub room_id: usize,
     pub gate_id: usize,
@@ -23,7 +23,7 @@ pub struct RoomGate {
 pub struct Room {
     pub id: usize,
     pub gates: Vec<RoomGate>,
-    pub range: Vec2,
+    pub range: Vec2, // aabb((0,0) -> (x,y))
     pub items: Vec<Item>,
 }
 

@@ -196,8 +196,8 @@ impl SkillKind {
     }
     pub fn parallel_count(self) -> usize {
         match self {
-            Self::ParallelProcessing => 3,
-            _ => 1,
+            Self::ParallelProcessing => 2,
+            _ => 0,
         }
     }
     pub const fn index(self) -> usize {

@@ -47,4 +47,28 @@
         "None",
         "None",
     ],
+    skill1: [
+        "Digit1",
+        "Numpad1",
+        "None",
+        "None",
+    ],
+    skill2: [
+        "Digit2",
+        "Numpad2",
+        "None",
+        "None",
+    ],
+    skill3: [
+        "Digit3",
+        "Numpad3",
+        "None",
+        "None",
+    ],
+    skill4: [
+        "Digit4",
+        "Numpad4",
+        "None",
+        "None",
+    ],
 )

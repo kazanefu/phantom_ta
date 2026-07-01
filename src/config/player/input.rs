@@ -142,6 +142,10 @@ pub struct InputSetting {
     pub attack: KeyBindings,
     pub end_app: KeyBindings,
     pub menu: KeyBindings,
+    pub skill1: KeyBindings,
+    pub skill2: KeyBindings,
+    pub skill3: KeyBindings,
+    pub skill4: KeyBindings,
 }
 
 impl Default for InputSetting {
@@ -180,6 +184,30 @@ impl Default for InputSetting {
             attack: KeyBindings::new([Some(InputKey::Mouse(MouseButton::Left)), None, None, None]),
             end_app: KeyBindings::new([Some(Key(KeyCode::Delete)), None, None, None]),
             menu: KeyBindings::new([Some(InputKey::Key(KeyCode::Escape)), None, None, None]),
+            skill1: KeyBindings::new([
+                Some(InputKey::Key(KeyCode::Digit1)),
+                Some(InputKey::Key(KeyCode::Numpad1)),
+                None,
+                None,
+            ]),
+            skill2: KeyBindings::new([
+                Some(InputKey::Key(KeyCode::Digit2)),
+                Some(InputKey::Key(KeyCode::Numpad2)),
+                None,
+                None,
+            ]),
+            skill3: KeyBindings::new([
+                Some(InputKey::Key(KeyCode::Digit3)),
+                Some(InputKey::Key(KeyCode::Numpad3)),
+                None,
+                None,
+            ]),
+            skill4: KeyBindings::new([
+                Some(InputKey::Key(KeyCode::Digit4)),
+                Some(InputKey::Key(KeyCode::Numpad4)),
+                None,
+                None,
+            ]),
         }
     }
 }

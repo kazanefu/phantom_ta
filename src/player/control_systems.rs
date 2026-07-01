@@ -168,7 +168,10 @@ fn call_attack(
     mut skill_activate_msg: MessageWriter<SkillActivateMsg>,
     save_data: Res<PlayerSaveData>,
 ) {
-    for _ in msg.read() {
+    for &m in msg.read() {
+        if m != AttackMsg::Start {
+            continue;
+        }
         if !stack.is_empty() {
             stack.activate();
         } else {

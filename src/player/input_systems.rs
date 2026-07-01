@@ -55,7 +55,7 @@ pub struct JumpHoldTime(pub f32);
 #[derive(Resource, Default)]
 pub struct DownInput(pub bool);
 
-#[derive(Message)]
+#[derive(Message, PartialEq, Eq, Clone, Copy)]
 pub enum AttackMsg {
     Start,
     End,

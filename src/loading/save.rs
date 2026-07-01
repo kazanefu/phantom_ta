@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+use strum::EnumCount;
+use strum_macros::EnumCount;
 
 use crate::loading::TaskKind;
 
@@ -24,13 +26,13 @@ pub enum SavingState {
 }
 
 #[repr(u8)]
-#[derive(PartialEq, Eq, Hash, Debug, Clone, Copy)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone, Copy, EnumCount)]
 pub enum SaveTaskKind {
     PlayerSaveDataList,
     Keymap,
 }
 impl super::TaskKind for SaveTaskKind {
-    const TOTAL: usize = 2;
+    const TOTAL: usize = Self::COUNT;
 }
 
 #[derive(Resource, Default)]

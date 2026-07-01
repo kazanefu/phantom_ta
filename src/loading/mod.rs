@@ -1,8 +1,10 @@
 use bevy::prelude::*;
+use strum::EnumCount;
 
 mod save;
 
 pub use save::*;
+use strum_macros::EnumCount;
 
 use crate::GameState;
 
@@ -22,7 +24,7 @@ impl Plugin for LoadingPlugin {
 }
 
 #[repr(u8)]
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, EnumCount)]
 pub enum LoadTaskKind {
     PlayerSaveDataList,
     Keymap,
@@ -30,7 +32,7 @@ pub enum LoadTaskKind {
 }
 
 impl LoadTaskKind {
-    const TOTAL: usize = 3;
+    const TOTAL: usize = Self::COUNT;
 }
 
 #[derive(Resource, Default)]

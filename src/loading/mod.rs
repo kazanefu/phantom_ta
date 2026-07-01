@@ -18,6 +18,7 @@ impl Plugin for LoadingPlugin {
             .add_systems(
                 Update,
                 (check_jp_font_loaded, check_complete_loading_task)
+                    .chain()
                     .run_if(in_state(GameState::Loading)),
             );
     }
@@ -105,6 +106,7 @@ fn check_jp_font_loaded(
         .is_some_and(|state| state.is_loaded())
     {
         load_task_state.set_task_done(LoadTaskKind::JpFont);
+        println!("done load font");
     }
 }
 

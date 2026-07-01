@@ -17,9 +17,9 @@
             id: 1,
             name: "master",
             level: 1.0,
-            available_skills: (true, true, false, false, true, false),
+            available_skills: (true, true, false, true, true, false),
             skill_build: (
-                skills: (Some(TestNormalAttack), Some(TestNormalAttack), Some(TestSkill), Some(ParallelProcessing), None),
+                skills: (Some(TestNormalAttack), Some(TestNormalAttack), Some(TestSkill), Some(ParallelProcessing), Some(UnconditionalJump)),
             ),
             available_checkpoints: [
                 0,

@@ -12,9 +12,20 @@ use crate::{
 
 pub struct PlayerControlPlugin;
 
+#[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
+pub enum PlayerAction {
+    Base,
+    Skill,
+    Last,
+}
+
 impl Plugin for PlayerControlPlugin {
     fn build(&self, app: &mut App) {
         app.add_message::<NormalAttackMsg>()
+            .configure_sets(
+                Update,
+                (PlayerAction::Base, PlayerAction::Skill, PlayerAction::Last).chain(),
+            )
             .add_systems(
                 Update,
                 (update_dash_cool_time, start_dash, update_dash_time)
@@ -33,12 +44,14 @@ impl Plugin for PlayerControlPlugin {
                     )
                         .chain())
                     .run_if(|stack: Res<SkillStack>| stack.is_ready() && !stack.is_activating)
-                    .in_set(GameSysSet::Logic),
+                    .in_set(GameSysSet::Logic)
+                    .in_set(PlayerAction::Base),
                     stop_while_cooldown
                         .run_if(|stack: Res<SkillStack>| {
                             !(stack.is_ready() && !stack.is_activating)
                         })
-                        .in_set(GameSysSet::Logic),
+                        .in_set(GameSysSet::Logic)
+                        .in_set(PlayerAction::Base),
                 )
                     .run_if(in_state(TimeState::Running)),
             );
@@ -119,7 +132,7 @@ fn update_jumping_timer(mut que: Query<&mut JumpingTimer>, time: Res<Time>) {
     }
 }
 
-fn jump_action(
+pub fn jump_action(
     mut que: Query<
         (
             &mut Velocity,

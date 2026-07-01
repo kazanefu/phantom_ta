@@ -6,6 +6,7 @@ use strum_macros::{EnumCount, EnumIter, IntoStaticStr};
 
 use crate::{game_system_set::GameSysSet, player::status::PlayerStatus, time::TimeState};
 mod ui;
+mod unconditional_jump;
 pub struct SkillPlugin;
 
 impl Plugin for SkillPlugin {
@@ -30,7 +31,8 @@ impl Plugin for SkillPlugin {
                     .chain(),)
                     .in_set(SkillSysSet::Activation),
             )
-            .add_plugins(ui::PlayerSkillUiPlugin);
+            .add_plugins(ui::PlayerSkillUiPlugin)
+            .add_plugins(unconditional_jump::UnconditionalJumpPlugin);
     }
 }
 

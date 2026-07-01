@@ -1,12 +1,13 @@
 use bevy::prelude::*;
 
-use crate::{GameState, JpFont, player::skills::SkillStack};
+use crate::{GameState, JpFont, game_system_set::GameSysSet, player::skills::SkillStack};
 
 pub struct PlayerSkillUiPlugin;
 
 impl Plugin for PlayerSkillUiPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Playing), spawn_skill_ui);
+        app.add_systems(OnEnter(GameState::Playing), spawn_skill_ui)
+            .add_systems(Update, skill_stack_ui_update.in_set(GameSysSet::Rendering));
     }
 }
 
@@ -75,9 +76,24 @@ fn skill_stack_ui(id: usize, font: Handle<Font>) -> impl Bundle {
 }
 
 fn spawn_skill_ui(mut commands: Commands, stack: Res<SkillStack>, font: Res<JpFont>) {
+    let base = commands.spawn(SkillUiCanvas::default()).id();
     let canvas = commands.spawn(skill_stack_ui_canvas()).id();
     for i in 0..stack.capacity {
         let skill_ui = commands.spawn(skill_stack_ui(i, font.font.clone())).id();
         commands.entity(canvas).add_child(skill_ui);
+    }
+    commands.entity(base).add_child(canvas);
+}
+
+fn skill_stack_ui_update(
+    mut que: Query<(&mut BackgroundColor, &SkillStackUi)>,
+    stack: Res<SkillStack>,
+) {
+    for (mut color, ui) in &mut que {
+        if stack.stack.len() > ui.id {
+            color.0 = Color::srgba(1.0, 1.0, 1.0, 1.0);
+        } else {
+            color.0 = Color::srgba(0.5, 0.5, 0.5, 0.8);
+        }
     }
 }

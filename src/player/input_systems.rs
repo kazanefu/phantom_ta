@@ -1,6 +1,11 @@
 use bevy::{input::mouse::MouseMotion, prelude::*};
 
-use crate::{config::PlayerConfig, game_system_set::GameSysSet, player::Player, time::TimeState};
+use crate::{
+    config::PlayerConfig,
+    game_system_set::GameSysSet,
+    player::{Player, PlayerSaveData, skills::SkillStack},
+    time::TimeState,
+};
 
 pub struct PlayerInputPlugin;
 
@@ -24,6 +29,7 @@ impl Plugin for PlayerInputPlugin {
                     (jump_hold, move_y_input).chain(),
                     dash_input,
                     attack_input,
+                    skill_push_input,
                 )
                     .in_set(GameSysSet::Input)
                     .run_if(in_state(TimeState::Running)),
@@ -180,5 +186,37 @@ fn update_mouse_position(
     mouse_position.delta = Vec2::ZERO;
     for motion in mouse_motion.read() {
         mouse_position.delta += motion.delta;
+    }
+}
+
+fn skill_push_input(
+    keyboard: Res<ButtonInput<KeyCode>>,
+    mouse: Res<ButtonInput<MouseButton>>,
+    config: Res<PlayerConfig>,
+    mut skill_stack: ResMut<SkillStack>,
+    player_data: Res<PlayerSaveData>,
+) {
+    if skill_stack.is_activating || !skill_stack.is_ready() {
+        return;
+    }
+    if config.input.skill1.just_pressed(&keyboard, &mouse)
+        && let Some(skill) = player_data.skill_build.skills[1]
+    {
+        skill_stack.push(skill);
+    }
+    if config.input.skill2.just_pressed(&keyboard, &mouse)
+        && let Some(skill) = player_data.skill_build.skills[2]
+    {
+        skill_stack.push(skill);
+    }
+    if config.input.skill3.just_pressed(&keyboard, &mouse)
+        && let Some(skill) = player_data.skill_build.skills[3]
+    {
+        skill_stack.push(skill);
+    }
+    if config.input.skill4.just_pressed(&keyboard, &mouse)
+        && let Some(skill) = player_data.skill_build.skills[4]
+    {
+        skill_stack.push(skill);
     }
 }

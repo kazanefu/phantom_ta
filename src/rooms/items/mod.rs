@@ -10,7 +10,7 @@ pub enum ItemKind {
 }
 
 #[derive(Clone, Copy, Debug)]
-pub struct Item {
+pub struct RoomItem {
     pub kind: ItemKind,
     pub transform: Transform,
 }
@@ -21,7 +21,7 @@ struct ItemSerde {
     transform: ItemTransform,
 }
 
-impl Serialize for Item {
+impl Serialize for RoomItem {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -35,14 +35,14 @@ impl Serialize for Item {
     }
 }
 
-impl<'de> Deserialize<'de> for Item {
+impl<'de> Deserialize<'de> for RoomItem {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
         let data = ItemSerde::deserialize(deserializer)?;
 
-        Ok(Item {
+        Ok(RoomItem {
             kind: data.kind,
             transform: data.transform.into(),
         })

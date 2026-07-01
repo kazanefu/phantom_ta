@@ -1,4 +1,4 @@
-use bevy::{anti_alias::taa, prelude::*};
+use bevy::prelude::*;
 mod control;
 mod input;
 mod keymap_fs;

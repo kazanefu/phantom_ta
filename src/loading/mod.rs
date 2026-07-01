@@ -30,6 +30,7 @@ pub enum LoadTaskKind {
     PlayerSaveDataList,
     Keymap,
     JpFont,
+    Map,
 }
 
 impl LoadTaskKind {

@@ -1,11 +1,31 @@
 use bevy::prelude::*;
 
-use items::Item;
+use items::RoomItem;
 use serde::{Deserialize, Serialize};
 
-use crate::file::{Ron, SaveLoad};
+use crate::{
+    GameState,
+    file::{Ron, SaveLoad},
+    loading::LoadTaskState,
+    loading::TaskState,
+};
 
 mod items;
+mod spawn;
+
+pub struct RoomsPlugin;
+impl Plugin for RoomsPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(spawn::RoomSpawnPlugin).add_systems(
+            Update,
+            load_map.run_if(
+                in_state(GameState::Loading).and(|tasklist: Res<LoadTaskState>| {
+                    !tasklist.is_task_done(crate::loading::LoadTaskKind::Map)
+                }),
+            ),
+        );
+    }
+}
 
 #[derive(Serialize, Deserialize, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct RoomGateId {
@@ -24,10 +44,11 @@ pub struct Room {
     pub id: usize,
     pub gates: Vec<RoomGate>,
     pub range: Vec2, // aabb((0,0) -> (x,y))
-    pub items: Vec<Item>,
+    pub items: Vec<RoomItem>,
+    pub enemies: Vec<crate::enemy::Enemy>,
 }
 
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Serialize, Deserialize, Default, Resource)]
 pub struct Map {
     pub rooms: Vec<Room>,
 }
@@ -36,4 +57,10 @@ impl SaveLoad for Map {
     const PATH: &'static str = "assets/map.ron";
     type Format = Ron;
     const USE_APPLICATION_DATA_DIR: bool = false;
+}
+
+fn load_map(mut commands: Commands, mut tasklist: ResMut<LoadTaskState>) {
+    let map = Map::load_default_path().unwrap_or_default();
+    commands.insert_resource(map);
+    tasklist.set_task_done(crate::loading::LoadTaskKind::Map);
 }

@@ -6,6 +6,7 @@ mod character;
 mod collision_groups;
 mod config;
 mod end_app;
+mod enemy;
 mod game_state;
 mod game_system_set;
 mod ground_state;
@@ -70,5 +71,7 @@ fn main() {
         .add_plugins(end_app::EndAppPlugin)
         .add_plugins(menu::MenuPlugin)
         .add_plugins(test_scene::TestScenePlugin)
+        .add_plugins(room_transition::RoomTransitionPlugin)
+        .add_plugins(rooms::RoomsPlugin)
         .run();
 }

@@ -12,6 +12,7 @@ pub struct RoomTransitionPlugin;
 impl Plugin for RoomTransitionPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<RoomTransition>()
+            .init_resource::<CurrentRoom>()
             .add_systems(OnEnter(GameState::RoomTransition), reset_timer_system)
             .add_systems(
                 Update,
@@ -28,7 +29,7 @@ pub struct RoomTransition {
 
 #[derive(Resource, Default)]
 pub struct CurrentRoom {
-    id: RoomGateId,
+    pub id: RoomGateId,
 }
 impl Default for RoomTransition {
     fn default() -> Self {

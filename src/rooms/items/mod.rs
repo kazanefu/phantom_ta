@@ -1,5 +1,14 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
+mod ground_spawn;
+
+pub struct RoomItemsPlugin;
+
+impl Plugin for RoomItemsPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(ground_spawn::GroundSpawnPlugin);
+    }
+}
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub enum ItemKind {

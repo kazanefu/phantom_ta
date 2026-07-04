@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use items::RoomItem;
+pub use items::RoomItem;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -12,18 +12,22 @@ use crate::{
 
 mod items;
 mod spawn;
+pub use items::ItemKind;
+pub use spawn::SpawnItemMsg;
 
 pub struct RoomsPlugin;
 impl Plugin for RoomsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(spawn::RoomSpawnPlugin).add_systems(
-            Update,
-            load_map.run_if(
-                in_state(GameState::Loading).and(|tasklist: Res<LoadTaskState>| {
-                    !tasklist.is_task_done(crate::loading::LoadTaskKind::Map)
-                }),
-            ),
-        );
+        app.add_plugins(spawn::RoomSpawnPlugin)
+            .add_systems(
+                Update,
+                load_map.run_if(in_state(GameState::Loading).and(
+                    |tasklist: Res<LoadTaskState>| {
+                        !tasklist.is_task_done(crate::loading::LoadTaskKind::Map)
+                    },
+                )),
+            )
+            .add_plugins(items::RoomItemsPlugin);
     }
 }
 
@@ -36,7 +40,8 @@ pub struct RoomGateId {
 pub struct RoomGate {
     pub id: RoomGateId,
     pub position: Vec2,
-    pub next_gate: RoomGateId,
+    // Option: because start gate has no next gate. but other gates do.
+    pub next_gate: Option<RoomGateId>,
 }
 
 #[derive(Serialize, Deserialize)]

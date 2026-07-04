@@ -31,6 +31,7 @@ pub enum LoadTaskKind {
     Keymap,
     JpFont,
     Map,
+    GroundTexture,
 }
 
 impl LoadTaskKind {

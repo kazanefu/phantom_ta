@@ -3,6 +3,7 @@ use bevy_rapier2d::prelude::*;
 
 use crate::{
     GameState,
+    ground_state::Ground,
     room_transition::CurrentRoom,
     rooms::{Map, items::RoomItem},
 };
@@ -44,45 +45,30 @@ fn spawn_frame(mut commands: Commands, map: Res<Map>, current_room: Res<CurrentR
         );
         return;
     };
+
     const ONE_BOX: f32 = 50.0;
-    commands.spawn((
-        Sprite {
-            color: Color::WHITE,
-            custom_size: Some(Vec2::new(room.range.x, ONE_BOX)),
-            ..default()
-        },
-        Collider::cuboid(room.range.x / 2.0, ONE_BOX / 2.0),
-        RigidBody::Fixed,
-        Transform::from_xyz(0.0, room.range.y / 2.0, 0.0),
-    ));
-    commands.spawn((
-        Sprite {
-            color: Color::WHITE,
-            custom_size: Some(Vec2::new(room.range.x, ONE_BOX)),
-            ..default()
-        },
-        Collider::cuboid(room.range.x / 2.0, ONE_BOX / 2.0),
-        RigidBody::Fixed,
-        Transform::from_xyz(0.0, -room.range.y / 2.0, 0.0),
-    ));
-    commands.spawn((
-        Sprite {
-            color: Color::WHITE,
-            custom_size: Some(Vec2::new(ONE_BOX, room.range.y)),
-            ..default()
-        },
-        Collider::cuboid(ONE_BOX / 2.0, room.range.y / 2.0),
-        RigidBody::Fixed,
-        Transform::from_xyz(room.range.x / 2.0, 0.0, 0.0),
-    ));
-    commands.spawn((
-        Sprite {
-            color: Color::WHITE,
-            custom_size: Some(Vec2::new(ONE_BOX, room.range.y)),
-            ..default()
-        },
-        Collider::cuboid(ONE_BOX / 2.0, room.range.y / 2.0),
-        RigidBody::Fixed,
-        Transform::from_xyz(-room.range.x / 2.0, 0.0, 0.0),
-    ));
+    let rx = room.range.x;
+    let ry = room.range.y;
+
+    // def (width, height, x, y)
+    let walls = [
+        (rx, ONE_BOX, 0.0, ry / 2.0),  // up wall
+        (rx, ONE_BOX, 0.0, -ry / 2.0), // down wall
+        (ONE_BOX, ry, rx / 2.0, 0.0),  // right wall
+        (ONE_BOX, ry, -rx / 2.0, 0.0), // left wall
+    ];
+
+    for (size_x, size_y, pos_x, pos_y) in walls {
+        commands.spawn((
+            Sprite {
+                color: Color::WHITE,
+                custom_size: Some(Vec2::new(size_x, size_y)),
+                ..default()
+            },
+            Collider::cuboid(size_x / 2.0, size_y / 2.0),
+            RigidBody::Fixed,
+            Transform::from_xyz(pos_x, pos_y, 0.0),
+            Ground,
+        ));
+    }
 }

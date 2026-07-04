@@ -4,16 +4,34 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 use crate::{
-    GameState, InputField, InputFieldBundle, JpFont, ONE_WAY_PLATFORM_GROUP, follow::Follower,
-    ground_state::Ground, player::PlayerBundle,
+    GameState, InputField, InputFieldBundle, JpFont, ONE_WAY_PLATFORM_GROUP,
+    follow::Follower,
+    ground_state::Ground,
+    player::PlayerBundle,
+    rooms::{ItemKind, RoomItem, SpawnItemMsg},
 };
 
 pub struct TestScenePlugin;
 
 impl Plugin for TestScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Playing), setup_scene);
+        app.add_systems(OnEnter(GameState::Playing), (setup_scene, setup_ground));
     }
+}
+
+fn setup_ground(mut msg: MessageWriter<SpawnItemMsg>) {
+    msg.write(SpawnItemMsg(RoomItem {
+        kind: ItemKind::Ground,
+        transform: Transform {
+            translation: Vec3 {
+                x: -300.0,
+                y: 300.0,
+                z: 0.0,
+            },
+            rotation: Quat::from_rotation_z(-PI / 4.0),
+            scale: Vec3::new(1000.0, 20.0, 1.0),
+        },
+    }));
 }
 
 fn setup_scene(mut commands: Commands) {

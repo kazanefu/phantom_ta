@@ -5,6 +5,7 @@ pub mod file;
 pub mod follow;
 pub mod input_field;
 pub mod scroll_ui;
+pub mod tile;
 pub mod time;
 
 pub use input_field::*;

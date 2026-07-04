@@ -25,11 +25,11 @@ fn setup_ground(mut msg: MessageWriter<SpawnItemMsg>) {
         transform: Transform {
             translation: Vec3 {
                 x: -300.0,
-                y: 300.0,
+                y: -200.0,
                 z: 0.0,
             },
             rotation: Quat::from_rotation_z(-PI / 4.0),
-            scale: Vec3::new(1000.0, 20.0, 1.0),
+            scale: Vec3::new(1000.0, 300.0, 1.0),
         },
     }));
 }

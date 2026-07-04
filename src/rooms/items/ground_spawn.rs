@@ -63,7 +63,7 @@ fn spawn_ground(
                 Collider::cuboid(transform.scale.x / 2.0, transform.scale.y / 2.0),
             ))
             .id();
-        let tile_size = Vec2::new(10.0, 10.0);
+        let tile_size = Vec2::new(50.0, 50.0);
         for pos in crate::utils::tile::rect_tile_pos_iter(transform, tile_size) {
             let _tile = commands
                 .spawn((

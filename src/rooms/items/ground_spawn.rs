@@ -23,7 +23,8 @@ impl Plugin for GroundSpawnPlugin {
 
 #[derive(Resource)]
 struct GroundTexture {
-    texture: Handle<Image>,
+    base_texture: Handle<Image>,
+    upper_texture: Handle<Image>,
 }
 
 fn load_ground_texture(
@@ -32,7 +33,11 @@ fn load_ground_texture(
     mut tasklist: ResMut<LoadTaskState>,
 ) {
     let texture = asset_server.load("embedded://phantom_ta/images/ground_texture.png");
-    commands.insert_resource(GroundTexture { texture });
+    let upper_texture = asset_server.load("embedded://phantom_ta/images/ground_upper_texture.png");
+    commands.insert_resource(GroundTexture {
+        base_texture: texture,
+        upper_texture,
+    });
     tasklist.set_task_done(LoadTaskKind::GroundTexture);
     println!("done ground texture");
 }
@@ -68,7 +73,19 @@ fn spawn_ground(
             let _tile = commands
                 .spawn((
                     Sprite {
-                        image: ground_texture.texture.clone(),
+                        image: ground_texture.base_texture.clone(),
+                        custom_size: Some(tile_size),
+                        ..default()
+                    },
+                    Transform::from_translation(pos).with_rotation(transform.rotation),
+                ))
+                .id();
+        }
+        for pos in crate::utils::tile::upper_tile_pos_iter(transform, tile_size) {
+            let _tile = commands
+                .spawn((
+                    Sprite {
+                        image: ground_texture.upper_texture.clone(),
                         custom_size: Some(tile_size),
                         ..default()
                     },

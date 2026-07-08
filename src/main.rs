@@ -50,6 +50,7 @@ fn main() {
     }));
     bevy::asset::embedded_asset!(app, "fonts/NotoSansJP-Bold.ttf");
     bevy::asset::embedded_asset!(app, "images/ground_texture.png");
+    bevy::asset::embedded_asset!(app, "images/ground_upper_texture.png");
 
     app.add_plugins(RapierPhysicsPlugin::<NoUserData>::default())
         .insert_resource(TimestepMode::Interpolated {

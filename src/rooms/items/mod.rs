@@ -10,15 +10,16 @@ impl Plugin for RoomItemsPlugin {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub enum ItemKind {
     Ground,
     OneWay,
     Water,
     DamageGround,
+    Text(String),
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub struct RoomItem {
     pub kind: ItemKind,
     pub transform: Transform,
@@ -36,7 +37,7 @@ impl Serialize for RoomItem {
         S: Serializer,
     {
         let data = ItemSerde {
-            kind: self.kind,
+            kind: self.kind.clone(),
             transform: ItemTransform::from(&self.transform),
         };
 

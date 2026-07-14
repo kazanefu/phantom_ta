@@ -33,7 +33,7 @@ fn spawn_items(
         return;
     };
     for item in &room.items {
-        msg.write(SpawnItemMsg(*item));
+        msg.write(SpawnItemMsg(item.clone()));
     }
 }
 

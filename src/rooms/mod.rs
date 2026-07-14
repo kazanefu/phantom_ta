@@ -51,6 +51,16 @@ pub struct Room {
     pub range: Vec2, // aabb((0,0) -> (x,y))
     pub items: Vec<RoomItem>,
     pub enemies: Vec<crate::enemy::Enemy>,
+    pub background: RoomBackground,
+}
+
+#[derive(Serialize, Deserialize)]
+pub enum RoomBackground {
+    None, // for testing
+    DarkForest,
+    Cathedral,
+    Cemetery,
+    City,
 }
 
 #[derive(Serialize, Deserialize, Default, Resource)]

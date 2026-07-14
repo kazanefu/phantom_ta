@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::ground_state::Ground;
-use crate::rooms::items::ItemKind;
-use crate::rooms::spawn::SpawnItemMsg;
+use crate::{ground_state::Ground, rooms::items::ItemKind, rooms::spawn::SpawnItemMsg};
 
 use crate::{GameState, loading::*};
 

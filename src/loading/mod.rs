@@ -32,6 +32,7 @@ pub enum LoadTaskKind {
     JpFont,
     Map,
     GroundTexture,
+    OneWayTexture,
 }
 
 impl LoadTaskKind {

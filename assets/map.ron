@@ -1,3 +1,33 @@
 (
-    rooms: [],
+    rooms: [
+        (
+            id: 0,
+            gates: [],
+            range: Vec2(5000.0, 3000.0),
+            items: [
+                (
+                    kind: Ground,
+                    transform: (
+                        x: 0.0,
+                        y: -240.0,
+                        r: 0.0,
+                        s_x: 1000.0,
+                        s_y: 200.0,
+                    ),
+                ),
+                (
+                    kind: OneWay,
+                    transform: (
+                        x: 0.0,
+                        y: -40.0,
+                        r: 0.7,
+                        s_x: 600.0,
+                        s_y: 50.0,
+                    ),
+                ),
+            ],
+            enemies: [],
+            background: None,
+        ),
+    ],
 )

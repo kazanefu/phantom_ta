@@ -15,10 +15,11 @@ pub struct TestScenePlugin;
 
 impl Plugin for TestScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Playing), (setup_scene, setup_ground));
+        app.add_systems(OnEnter(GameState::Playing), setup_scene);
     }
 }
 
+#[allow(dead_code)]
 fn setup_ground(mut msg: MessageWriter<SpawnItemMsg>) {
     msg.write(SpawnItemMsg(RoomItem {
         kind: ItemKind::Ground,
@@ -35,40 +36,40 @@ fn setup_ground(mut msg: MessageWriter<SpawnItemMsg>) {
 }
 
 fn setup_scene(mut commands: Commands) {
-    commands.spawn((
-        RigidBody::Fixed,
-        Transform::from_xyz(0.0, -30.0, 0.0).with_rotation(Quat::from_rotation_z(0.0)),
-        Collider::cuboid(1000.0, 10.0),
-        Ground,
-        Sprite {
-            color: Color::srgb(0.5, 0.8, 0.0),
-            custom_size: Some(Vec2::new(2000.0, 20.0)),
-            ..default()
-        },
-    ));
-    commands.spawn((
-        RigidBody::Fixed,
-        Transform::from_xyz(0.0, -100.0, 0.0).with_rotation(Quat::from_rotation_z(PI / 4.0)),
-        Collider::cuboid(1000.0, 10.0),
-        Ground,
-        Sprite {
-            color: Color::srgb(0.5, 0.8, 0.0),
-            custom_size: Some(Vec2::new(2000.0, 20.0)),
-            ..default()
-        },
-        CollisionGroups::new(ONE_WAY_PLATFORM_GROUP, Group::all()),
-    ));
-    commands.spawn((
-        RigidBody::Fixed,
-        Transform::from_xyz(40.0, -900.0, 0.0),
-        Collider::cuboid(10.0, 1000.0),
-        Ground,
-        Sprite {
-            color: Color::srgb(0.5, 0.8, 0.0),
-            custom_size: Some(Vec2::new(20.0, 2000.0)),
-            ..default()
-        },
-    ));
+    // commands.spawn((
+    //     RigidBody::Fixed,
+    //     Transform::from_xyz(0.0, -30.0, 0.0).with_rotation(Quat::from_rotation_z(0.0)),
+    //     Collider::cuboid(1000.0, 10.0),
+    //     Ground,
+    //     Sprite {
+    //         color: Color::srgb(0.5, 0.8, 0.0),
+    //         custom_size: Some(Vec2::new(2000.0, 20.0)),
+    //         ..default()
+    //     },
+    // ));
+    // commands.spawn((
+    //     RigidBody::Fixed,
+    //     Transform::from_xyz(0.0, -100.0, 0.0).with_rotation(Quat::from_rotation_z(PI / 4.0)),
+    //     Collider::cuboid(1000.0, 10.0),
+    //     Ground,
+    //     Sprite {
+    //         color: Color::srgb(0.5, 0.8, 0.0),
+    //         custom_size: Some(Vec2::new(2000.0, 20.0)),
+    //         ..default()
+    //     },
+    //     CollisionGroups::new(ONE_WAY_PLATFORM_GROUP, Group::all()),
+    // ));
+    // commands.spawn((
+    //     RigidBody::Fixed,
+    //     Transform::from_xyz(40.0, -900.0, 0.0),
+    //     Collider::cuboid(10.0, 1000.0),
+    //     Ground,
+    //     Sprite {
+    //         color: Color::srgb(0.5, 0.8, 0.0),
+    //         custom_size: Some(Vec2::new(20.0, 2000.0)),
+    //         ..default()
+    //     },
+    // ));
     let player = commands
         .spawn((
             PlayerBundle::default(),

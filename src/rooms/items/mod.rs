@@ -1,12 +1,13 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 mod ground_spawn;
+mod one_way_spawn;
 
 pub struct RoomItemsPlugin;
 
 impl Plugin for RoomItemsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(ground_spawn::GroundSpawnPlugin);
+        app.add_plugins((ground_spawn::GroundSpawnPlugin, one_way_spawn::OneWaySpawnPlugin));
     }
 }
 

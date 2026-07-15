@@ -8,14 +8,12 @@ mod control_systems;
 mod input_systems;
 mod normal_attacks;
 mod spawn;
-mod restore;
 mod save_data;
 pub mod skills;
 mod status;
 
 pub use save_data::*;
 pub use spawn::*;
-pub use restore::*;
 
 use crate::{
     GameState, PLAYER_GROUP,

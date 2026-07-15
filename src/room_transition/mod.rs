@@ -5,6 +5,7 @@ use crate::{GameState, rooms::RoomGateId};
 mod player_state;
 mod room_cleanup;
 mod camera_state;
+mod transition_screen;
 
 const TRANSITION_DURATION: f32 = 1.0;
 
@@ -15,15 +16,16 @@ impl Plugin for RoomTransitionPlugin {
         app.init_resource::<RoomTransition>()
             .init_resource::<CurrentRoom>()
             .add_systems(OnEnter(GameState::RoomTransition), reset_timer_system)
-        .add_plugins((
-            player_state::PlayerRoomStatePlugin,
-            room_cleanup::RoomCleanupPlugin,
-            camera_state::CameraRoomStatePlugin,
-        ))
-        .add_systems(
-            Update,
-            poll_transition_system.run_if(in_state(GameState::RoomTransition)),
-        );
+            .add_plugins((
+                player_state::PlayerRoomStatePlugin,
+                room_cleanup::RoomCleanupPlugin,
+                camera_state::CameraRoomStatePlugin,
+                transition_screen::TransitionScreenPlugin,
+            ))
+            .add_systems(
+                Update,
+                poll_transition_system.run_if(in_state(GameState::RoomTransition)),
+            );
     }
 }
 

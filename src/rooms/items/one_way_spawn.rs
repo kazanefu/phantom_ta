@@ -2,7 +2,9 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 use crate::{
-    GameState, ONE_WAY_PLATFORM_GROUP, ground_state::Ground, loading::*,
+    GameState, ONE_WAY_PLATFORM_GROUP,
+    ground_state::Ground,
+    loading::*,
     rooms::{RoomEntity, items::ItemKind, spawn::SpawnItemMsg},
 };
 
@@ -30,7 +32,7 @@ fn load_one_way_texture(
     mut commands: Commands,
     mut tasklist: ResMut<LoadTaskState>,
 ) {
-    let upper_texture = asset_server.load("embedded://phantom_ta/images/ground_upper_texture.png");
+    let upper_texture = asset_server.load("embedded://phantom_ta/images/one_way_ground.png");
     commands.insert_resource(OneWayTexture { upper_texture });
     tasklist.set_task_done(LoadTaskKind::OneWayTexture);
     println!("done one way texture");

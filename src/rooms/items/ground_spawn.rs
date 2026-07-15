@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::{ground_state::Ground, rooms::items::ItemKind, rooms::spawn::SpawnItemMsg};
+use crate::{
+    ground_state::Ground,
+    rooms::{RoomEntity, items::ItemKind, spawn::SpawnItemMsg},
+};
 
 use crate::{GameState, loading::*};
 
@@ -64,6 +67,7 @@ fn spawn_ground(
                     scale: Vec3::splat(1.0),
                 },
                 Collider::cuboid(transform.scale.x / 2.0, transform.scale.y / 2.0),
+                RoomEntity,
             ))
             .id();
         let tile_size = Vec2::new(50.0, 50.0);
@@ -76,6 +80,7 @@ fn spawn_ground(
                         ..default()
                     },
                     Transform::from_translation(pos).with_rotation(transform.rotation),
+                    RoomEntity,
                 ))
                 .id();
         }
@@ -88,6 +93,7 @@ fn spawn_ground(
                         ..default()
                     },
                     Transform::from_translation(pos).with_rotation(transform.rotation),
+                    RoomEntity,
                 ))
                 .id();
         }

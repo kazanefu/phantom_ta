@@ -5,6 +5,7 @@ use crate::{
     game_system_set::GameSysSet,
     player::{Player, PlayerSaveData, skills::SkillStack},
     time::TimeState,
+    GameState,
 };
 
 pub struct PlayerInputPlugin;
@@ -32,7 +33,8 @@ impl Plugin for PlayerInputPlugin {
                     skill_push_input,
                 )
                     .in_set(GameSysSet::Input)
-                    .run_if(in_state(TimeState::Running)),
+                    .run_if(in_state(TimeState::Running))
+                    .run_if(in_state(GameState::Playing)),
             );
     }
 }

@@ -3,7 +3,7 @@ use bevy_rapier2d::prelude::*;
 
 use crate::{
     GameState, ONE_WAY_PLATFORM_GROUP, ground_state::Ground, loading::*,
-    rooms::items::ItemKind, rooms::spawn::SpawnItemMsg,
+    rooms::{RoomEntity, items::ItemKind, spawn::SpawnItemMsg},
 };
 
 pub struct OneWaySpawnPlugin;
@@ -61,6 +61,7 @@ fn spawn_one_way(
                 scale: Vec3::splat(1.0),
             },
             Collider::cuboid(transform.scale.x / 2.0, transform.scale.y / 2.0),
+            RoomEntity,
         ));
 
         let tile_size = Vec2::new(50.0, 50.0);
@@ -72,6 +73,7 @@ fn spawn_one_way(
                     ..default()
                 },
                 Transform::from_translation(pos).with_rotation(transform.rotation),
+                RoomEntity,
             ));
         }
     }

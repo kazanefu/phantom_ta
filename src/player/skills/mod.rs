@@ -4,7 +4,12 @@ use serde::{Deserialize, Serialize};
 use strum::{EnumCount, IntoEnumIterator};
 use strum_macros::{EnumCount, EnumIter, IntoStaticStr};
 
-use crate::{game_system_set::GameSysSet, player::status::PlayerStatus, time::TimeState};
+use crate::{
+    game_system_set::GameSysSet,
+    player::status::PlayerStatus,
+    time::TimeState,
+    GameState,
+};
 mod ui;
 mod unconditional_jump;
 pub struct SkillPlugin;
@@ -18,6 +23,7 @@ impl Plugin for SkillPlugin {
                 (SkillSysSet::Activation, SkillSysSet::Execution)
                     .chain()
                     .run_if(in_state(TimeState::Running))
+                    .run_if(in_state(GameState::Playing))
                     .in_set(GameSysSet::Logic),
             )
             .add_systems(

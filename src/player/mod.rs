@@ -7,11 +7,15 @@ mod collision;
 mod control_systems;
 mod input_systems;
 mod normal_attacks;
+mod spawn;
+mod restore;
 mod save_data;
 pub mod skills;
 mod status;
 
 pub use save_data::*;
+pub use spawn::*;
+pub use restore::*;
 
 use crate::{
     GameState, PLAYER_GROUP,
@@ -57,6 +61,7 @@ pub struct PlayerBundle {
     gravity: GravityScale,
     friction: Friction,
     ccd: Ccd,
+    visibility: Visibility,
     jumping_timer: JumpingTimer,
     down_state: DownState,
     collision_group: CollisionGroups,
@@ -85,6 +90,7 @@ impl Default for PlayerBundle {
                 combine_rule: CoefficientCombineRule::Min,
             },
             ccd: Ccd::enabled(),
+            visibility: Visibility::Visible,
             jumping_timer: JumpingTimer::default(),
             down_state: DownState(false),
             collision_group: CollisionGroups::new(PLAYER_GROUP, Group::all()),

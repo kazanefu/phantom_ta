@@ -5,7 +5,7 @@ use crate::{
     GameState,
     ground_state::Ground,
     room_transition::CurrentRoom,
-    rooms::{Map, items::RoomItem},
+    rooms::{Map, RoomEntity, items::RoomItem},
 };
 
 pub struct RoomSpawnPlugin;
@@ -69,6 +69,7 @@ fn spawn_frame(mut commands: Commands, map: Res<Map>, current_room: Res<CurrentR
             RigidBody::Fixed,
             Transform::from_xyz(pos_x, pos_y, 0.0),
             Ground,
+            RoomEntity,
         ));
     }
 }

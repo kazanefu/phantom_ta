@@ -11,14 +11,16 @@ use crate::{
 };
 
 mod items;
+mod gates;
 mod spawn;
 pub use items::ItemKind;
+pub use gates::Gate;
 pub use spawn::SpawnItemMsg;
 
 pub struct RoomsPlugin;
 impl Plugin for RoomsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(spawn::RoomSpawnPlugin)
+        app.add_plugins((spawn::RoomSpawnPlugin, gates::RoomGatePlugin))
             .add_systems(
                 Update,
                 load_map.run_if(in_state(GameState::Loading).and(
@@ -43,6 +45,9 @@ pub struct RoomGate {
     // Option: because start gate has no next gate. but other gates do.
     pub next_gate: Option<RoomGateId>,
 }
+
+#[derive(Component)]
+pub struct RoomEntity;
 
 #[derive(Serialize, Deserialize)]
 pub struct Room {

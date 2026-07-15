@@ -102,7 +102,7 @@ pub fn pressed_save_data_button(
             Interaction::Pressed => {
                 if let Some(data) = data_list.list.get(buton.data_id) {
                     *current_data = data.clone();
-                    next_state.set(GameState::Playing);
+                    next_state.set(GameState::RoomTransition);
                 }
             }
             Interaction::Hovered => {

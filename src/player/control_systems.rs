@@ -8,6 +8,7 @@ use crate::{
         skills::{SkillActivateMsg, SkillKind, SkillStack},
     },
     time::TimeState,
+    GameState,
 };
 
 pub struct PlayerControlPlugin;
@@ -53,7 +54,8 @@ impl Plugin for PlayerControlPlugin {
                         .in_set(GameSysSet::Logic)
                         .in_set(PlayerAction::Base),
                 )
-                    .run_if(in_state(TimeState::Running)),
+                    .run_if(in_state(TimeState::Running))
+                    .run_if(in_state(GameState::Playing)),
             );
     }
 }

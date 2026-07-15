@@ -1,9 +1,10 @@
 use bevy::prelude::*;
 
-use crate::{
-    GameState,
-    rooms::{Room, RoomGateId},
-};
+use crate::{GameState, rooms::RoomGateId};
+
+mod player_state;
+mod room_cleanup;
+mod camera_state;
 
 const TRANSITION_DURATION: f32 = 1.0;
 
@@ -14,10 +15,15 @@ impl Plugin for RoomTransitionPlugin {
         app.init_resource::<RoomTransition>()
             .init_resource::<CurrentRoom>()
             .add_systems(OnEnter(GameState::RoomTransition), reset_timer_system)
-            .add_systems(
-                Update,
-                poll_transition_system.run_if(in_state(GameState::RoomTransition)),
-            );
+        .add_plugins((
+            player_state::PlayerRoomStatePlugin,
+            room_cleanup::RoomCleanupPlugin,
+            camera_state::CameraRoomStatePlugin,
+        ))
+        .add_systems(
+            Update,
+            poll_transition_system.run_if(in_state(GameState::RoomTransition)),
+        );
     }
 }
 
@@ -64,7 +70,7 @@ fn poll_transition_system(
         if let Some(next_gate_id) = transition.next_gate_id {
             current_room.id = next_gate_id;
             transition.next_gate_id = None;
-            next_state.set(GameState::Playing)
         }
+        next_state.set(GameState::Playing);
     }
 }

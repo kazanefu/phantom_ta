@@ -13,6 +13,10 @@ impl Plugin for TransitionScreenPlugin {
 fn spawn_transition_screen(mut commands: Commands, jp_font: Res<JpFont>) {
     commands.spawn((
         Camera2d,
+        Camera {
+            order: 1,
+            ..default()
+        },
         Transform::from_xyz(0.0, 0.0, 1000.0),
         DespawnOnExit(GameState::RoomTransition),
     ));

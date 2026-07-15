@@ -66,7 +66,7 @@ fn spawn_one_way(
             RoomEntity,
         ));
 
-        let tile_size = Vec2::new(50.0, 50.0);
+        let tile_size = Vec2::new(10.0, 10.0);
         for pos in crate::utils::tile::upper_tile_pos_iter(transform, tile_size) {
             commands.spawn((
                 Sprite {

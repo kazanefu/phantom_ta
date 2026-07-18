@@ -1,4 +1,8 @@
 use serde::{Deserialize, Serialize};
+mod enemies;
+use bevy::prelude::*;
+mod range_detection;
+use range_detection::*;
 
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub enum EnemyKind {
@@ -8,4 +12,6 @@ pub enum EnemyKind {
 pub struct Enemy {
     pub kind: EnemyKind,
     pub level: f32,
+    pub pos: Vec2,
+    pub range: DetectionRange,
 }

@@ -77,5 +77,6 @@ fn main() {
         .add_plugins(test_scene::TestScenePlugin)
         .add_plugins(room_transition::RoomTransitionPlugin)
         .add_plugins(rooms::RoomsPlugin)
+        .add_plugins(enemy::EnemyPlugin)
         .run();
 }

@@ -1,12 +1,14 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::player::Player;
+use crate::{game_system_set::GameSysSet, player::Player};
 
 pub struct RangeDetectionPlugin;
 
 impl Plugin for RangeDetectionPlugin {
-    fn build(&self, app: &mut App) {}
+    fn build(&self, app: &mut App) {
+        app.add_systems(Update, check_inside.in_set(GameSysSet::Detection));
+    }
 }
 
 #[derive(Component, Serialize, Deserialize, Clone, Copy)]

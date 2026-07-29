@@ -14,8 +14,9 @@ impl Plugin for EnemyPlugin {
     }
 }
 
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize, Default)]
 pub enum EnemyKind {
+    #[default]
     Normal,
 }
 #[derive(Clone, Copy, Serialize, Deserialize)]

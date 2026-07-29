@@ -10,11 +10,11 @@ use crate::{
     loading::TaskState,
 };
 
-mod items;
 mod gates;
+mod items;
 mod spawn;
-pub use items::ItemKind;
 pub use gates::Gate;
+pub use items::ItemKind;
 pub use spawn::SpawnItemMsg;
 
 pub struct RoomsPlugin;
@@ -55,7 +55,7 @@ pub struct Room {
     pub gates: Vec<RoomGate>,
     pub range: Vec2, // aabb((0,0) -> (x,y))
     pub items: Vec<RoomItem>,
-    pub enemies: Vec<crate::enemy::Enemy>,
+    pub enemies: Vec<crate::enemy::EnemyInfo>,
     pub background: RoomBackground,
 }
 
